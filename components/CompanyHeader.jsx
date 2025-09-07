@@ -7,7 +7,6 @@ import VView from './VView';
 const CompanyHeader = () => {
   const { Name, Symbol, AssetType, Exchange, MarketCapitalization, PERatio } = company;
 
-  // Simple function to format market cap to a readable string (e.g., 2.78T, 231.51B)
   const formatMarketCap = (cap) => {
     if (!cap) return 'N/A';
     const num = parseInt(cap);

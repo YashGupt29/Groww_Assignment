@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View ,StyleSheet} from "react-native";
 import { CartesianChart, Line, useChartPressState } from "victory-native";
 import {
   DashPathEffect,
@@ -18,22 +18,23 @@ const VictoryLineChart = () => {
   const [chartData] = useState(DATA);
 
   return (
-    <View style={{ height: 300, padding: 16 }}>
+    <View style={styles.chartBox}>
       <CartesianChart
         data={chartData}
         xKey="day"
         yKeys={["highTmp"]}
-        domainPadding={{ top: 30 }}
+        domainPadding={{ top: 40, bottom: 40 }}
         chartPressState={state}
-        yAxis={[
-          {
-            yKeys: ["highTmp"],
-            lineColor: "black",
-            labelColor: "black",
-            tickCount: 0,
-            axisSide: "right",
-          },
-        ]}
+        yAxis={[{
+          yKeys: ["highTmp"],
+          min: 80, 
+          max: 200, 
+          lineColor: "black",
+          labelColor: "black",
+          tickCount: 0,
+          axisSide: "right",
+        }]}
+        
       >
         {({ points, chartBounds }) => {
           const topLinePath = Skia.Path.Make();
@@ -74,3 +75,14 @@ const VictoryLineChart = () => {
 };
 
 export default VictoryLineChart;
+
+const styles = StyleSheet.create({
+  chartBox: {
+    height: 240,
+    margin: 16,
+    borderWidth: 1,
+    borderColor: "light-gray",
+    borderRadius: 8,
+    backgroundColor: "white",
+  },
+});

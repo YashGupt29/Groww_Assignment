@@ -27,11 +27,10 @@ export default CompanyScreen;
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1, // This is the most important style!
-    backgroundColor: "#fff", // Or your screen's background color
+    flex: 1, 
+    backgroundColor: "#fff", 
   },
   chartWrapper: {
-    // This wrapper ensures the chart has a container to flex inside
     flex: 1,
   },
 });
