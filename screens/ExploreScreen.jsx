@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VView from '../components/VView';
 import TTouchable from '../components/TTouchable';
 import StockCard from '../components/StockCard';
+import StockListScreen from './StockListScreen';
 
 const ExploreScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -40,7 +41,7 @@ const ExploreScreen = ({ navigation }) => {
       <ScrollView style={styles.scrollViewContent}>
         <VView style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Top Gainers</Text>
-          <TTouchable onPress={() => console.log('View All Gainers')}>
+          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: stockData.top_gainers })}>
             <Text style={styles.viewAllText}>View All</Text>
           </TTouchable>
         </VView>
@@ -58,7 +59,7 @@ const ExploreScreen = ({ navigation }) => {
 
         <VView style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Top Losers</Text>
-          <TTouchable onPress={() => console.log('View All Losers')}>
+          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: stockData.top_losers })}>
             <Text style={styles.viewAllText}>View All</Text>
           </TTouchable>
         </VView>

@@ -7,6 +7,8 @@ import {
   Skia,
 } from "@shopify/react-native-skia";
 import { Tooltip } from "../ToolTip";
+import DurationSelector from "../DurationSelector"
+
 
 const DATA = Array.from({ length: 100 }, (_, i) => ({
   day: i,
@@ -23,7 +25,7 @@ const VictoryLineChart = () => {
         data={chartData}
         xKey="day"
         yKeys={["highTmp"]}
-        domainPadding={{ top: 40, bottom: 40 }}
+        domainPadding={{ top: 20, bottom: 20 }}
         chartPressState={state}
         yAxis={[{
           yKeys: ["highTmp"],
@@ -38,8 +40,8 @@ const VictoryLineChart = () => {
       >
         {({ points, chartBounds }) => {
           const topLinePath = Skia.Path.Make();
-          topLinePath.moveTo(chartBounds.left, chartBounds.top + 70);
-          topLinePath.lineTo(chartBounds.right, chartBounds.top + 70);
+          topLinePath.moveTo(chartBounds.left, chartBounds.top + 50);
+          topLinePath.lineTo(chartBounds.right, chartBounds.top + 50);
 
           return (
             <>
@@ -70,6 +72,7 @@ const VictoryLineChart = () => {
           );
         }}
       </CartesianChart>
+      <DurationSelector/>
     </View>
   );
 };
@@ -78,11 +81,13 @@ export default VictoryLineChart;
 
 const styles = StyleSheet.create({
   chartBox: {
-    height: 240,
-    margin: 16,
-    borderWidth: 1,
-    borderColor: "light-gray",
+    height: 250,
+    margin: 10,
+    borderWidth: 2,
+    borderColor: "#eeeeee",
     borderRadius: 8,
     backgroundColor: "white",
+    paddingTop:5,
+    paddingBottom:10
   },
 });

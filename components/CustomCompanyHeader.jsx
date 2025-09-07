@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VView from './VView';
 import TTouchable from './TTouchable';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Colors from '../constants/Colors';
+import AddToWatchlistModal from './AddToWatchlistModal';
 
 
 const CustomCompanyHeader = ({ navigation, route, options }) => {
+  const [isModalVisible, setModalVisible] = useState(false);
   const insets = useSafeAreaInsets();
   const paddingTop = Platform.OS === 'android' ? insets.top : 0;
   const title = options.title !== undefined ? options.title : route.name;
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   return (
     <VView style={[styles.headerContainer, { paddingTop }]}>
@@ -18,9 +24,11 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
       <Icon name="arrow-left" size={18} color="black" />
           </TTouchable>
       <Text style={styles.headerTitle}>{title}</Text>
-      <TTouchable onPress={() => console.log('Bookmark Pressed!')} style={styles.bookmarkButton}>
+      <TTouchable onPress={toggleModal} style={styles.bookmarkButton}>
         <Icon name="bookmark-o" size={24} color="black" style={{marginRight:10}} />
       </TTouchable>
+
+      <AddToWatchlistModal isVisible={isModalVisible} onClose={toggleModal} />
     </VView>
   );
 };

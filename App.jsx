@@ -9,6 +9,7 @@ import Colors from './constants/Colors';
 import { getTabBarIcon } from './utils/getTabBarIcon';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CompanyScreen from './screens/CompanyScreen';
+import StockListScreen from './screens/StockListScreen';
 import CustomCompanyHeader from './components/CustomCompanyHeader'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -33,7 +34,6 @@ function Tabs() {
   );
 }
 
-// Move header definition outside the component to avoid re-rendering
 const renderCompanyHeader = (props) => <CustomCompanyHeader {...props} />;
 
 function App() {
@@ -55,6 +55,7 @@ function App() {
               title: 'Detail Overview',
             }}
           />
+          <Stack.Screen name="StockList" component={StockListScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

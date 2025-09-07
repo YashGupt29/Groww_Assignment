@@ -40,7 +40,7 @@ const StockCard = ({ stockName, price, change_percentage,navigation }) => {
 const styles = StyleSheet.create({
   card: {
     width: 170,
-    height: 130,
+    height: 'auto',
     backgroundColor: Colors.cardBackground,
     borderRadius: 8,
     padding: 10,

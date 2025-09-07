@@ -42,8 +42,9 @@ const styles = StyleSheet.create({
   },
   selectorWrapper: {
     flexDirection: 'row',
-    backgroundColor: Colors.lightGray,
+    backgroundColor: '#eeeeee',
     borderRadius: 20,
+    border:2,
     overflow: 'hidden',
   },
   durationButton: {

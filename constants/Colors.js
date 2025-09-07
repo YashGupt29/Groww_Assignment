@@ -13,6 +13,7 @@ const Colors = {
     black: '#000000',
     lightGreen: '#E8F5E9', // Light green for positive change background
     lightRed: '#FFEBEE', // Light red for negative change background
+    brown: '#A0522D', // Brown color for duration selector
 };
 
 export default Colors;
