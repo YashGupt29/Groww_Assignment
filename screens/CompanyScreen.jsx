@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import StockChart from '../components/graph/StockChart'
 import { stockData } from '../constants/dummyData'
+import CompanyHeader from  '../components/CompanyHeader'
 
 const CompanyScreen = () => {
   const chartData = Object.keys(stockData.TimeSeriesDaily).map(date => ({
@@ -11,9 +12,11 @@ const CompanyScreen = () => {
 
   return (
     <View>
-      <Text>CompanyOverview</Text>
+      <View>
+          <CompanyHeader/>
+      </View>
       <View style={styles.chartWrapper}> 
-      <StockChart data={chartData} />
+          <StockChart data={chartData} />
       </View>
     </View>
   )

@@ -30,7 +30,6 @@ const CompanyHeader = () => {
         <Text style={styles.companyDetails}>{Symbol}, {AssetType}</Text>
         <Text style={styles.companyDetails}>{Exchange}</Text>
       </View>
-
       <View style={styles.priceInfo}>
         <Text style={styles.price}>${(Math.random() * 200 + 100).toFixed(2)}</Text>
         <Text style={[styles.change, { color: Math.random() > 0.5 ? Colors.green : Colors.red }]}>
@@ -61,12 +60,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   companyName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.black,
   },
   companyDetails: {
-    fontSize: 14,
+    fontSize: 10,
     color: Colors.darkGray,
   },
   priceInfo: {
