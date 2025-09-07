@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View ,StyleSheet} from "react-native";
 import { CartesianChart, Line, useChartPressState } from "victory-native";
 import {
@@ -7,26 +7,48 @@ import {
   Skia,
 } from "@shopify/react-native-skia";
 import { Tooltip } from "../ToolTip";
-import DurationSelector from "../DurationSelector"
+import { useTimeSeriesData } from '../../hooks/useTimeSeriesData';
+import { ActivityIndicator, Text } from 'react-native';
 
 
-const DATA = Array.from({ length: 100 }, (_, i) => ({
-  day: i,
-  highTmp: Math.sin(i / 10) * 100 + Math.random() * 20 + 100,
-}));
+const StockChart = ({ symbol, duration }) => {
+  const { data: chartData, isLoading, error } = useTimeSeriesData(symbol, duration);
+  const { state, isActive } = useChartPressState({ x: 0, y: { close: 0 } });
+  console.log(chartData);
 
-const VictoryLineChart = () => {
-  const { state, isActive } = useChartPressState({ x: 0, y: { highTmp: 0 } });
-  const [chartData] = useState(DATA);
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading chart data...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>Error loading chart data: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!chartData || chartData.length === 0) {
+    return (
+      <View style={styles.noDataContainer}>
+        <Text>No chart data available.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.chartBox}>
       <CartesianChart
           data={chartData}
-          xKey="day"
-          yKeys={["highTmp"]}
+          xKey="date"
+          yKeys={["close"]}
           domain={{ 
-            y: [0, Math.max(...chartData.map(d => d.highTmp)) + 20]
+            y: [Math.min(...chartData.map(d => d.close)) * 0.9, Math.max(...chartData.map(d => d.close)) * 1.1]
           }}
           domainPadding={{ top: 20, bottom: 0 }}
           chartPressState={state}
@@ -38,7 +60,7 @@ const VictoryLineChart = () => {
             axisSide:"bottom",
           }}
           yAxis={[{
-            yKeys: ["highTmp"],
+            yKeys: ["close"],
             min: 0,
             lineColor: "black",   
             labelColor: "black",
@@ -63,15 +85,15 @@ const VictoryLineChart = () => {
                 <DashPathEffect intervals={[3, 3]} />
               </Path>
               <Line
-                points={points.highTmp}
+                points={points.close}
                 color="red"
                 strokeWidth={3}
                 animate={{ duration: 500, onLoad: { duration: 500 } }}
               />
-              {isActive && (
+              {isActive && ( 
                 <Tooltip
                   x={state.x.position}
-                  y={state.y.highTmp.position}
+                  y={state.y.close.position}
                   chartBounds={chartBounds}
                   state={state}
                 />
@@ -80,12 +102,11 @@ const VictoryLineChart = () => {
           );
         }}
       </CartesianChart>
-      <DurationSelector/>
     </View>
   );
 };
 
-export default VictoryLineChart;
+export default StockChart;
 
 const styles = StyleSheet.create({
   chartBox: {
@@ -97,5 +118,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingTop:5,
     paddingBottom:10
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

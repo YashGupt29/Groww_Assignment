@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, ScrollView, TextInput, Platform, ActivityIndicator, View } from 'react-native';
+import { Text, StyleSheet, ScrollView, TextInput, Platform, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VView from '../components/VView';
 import TTouchable from '../components/TTouchable';
@@ -43,7 +43,6 @@ const ExploreScreen = ({ navigation }) => {
           placeholderTextColor="#424242" 
         />
       </VView>
-
       <ScrollView style={styles.scrollViewContent}>
         <VView style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Top Gainers</Text>

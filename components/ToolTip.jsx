@@ -9,9 +9,9 @@ export const Tooltip = ({ x, y, chartBounds ,state}) => {
     const p2 = useDerivedValue(() => ({ x: x.value, y: chartBounds.bottom }));
     const font = useFont(roboto, 14);
     const label = useDerivedValue(() => {
-        const day = state.x.value ?? 0;                // 👈 just .value
-    const temp = state.y.highTmp.value ?? 0;   
-        return `Day: ${Math.round(day)}, ${Math.round(temp)}°C`;
+        const date = state.x.value ?? 'N/A'; 
+        const close = state.y.close.value ?? 'N/A';
+        return `Date: ${date}, Close: ${close}`;
       });
 
   
@@ -23,7 +23,7 @@ export const Tooltip = ({ x, y, chartBounds ,state}) => {
         <Text
         x={x}
         y={useDerivedValue(() => y.value - 20, [y])} 
-        text="Yash"
+        text={label}
         color="black"
         size={12}
         font={font} 

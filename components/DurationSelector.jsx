@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../constants/Colors';
 
-const DurationSelector = () => {
-  const [selectedDuration, setSelectedDuration] = useState('1D');
-
+const DurationSelector = ({ selectedDuration, onSelectDuration }) => {
   const durations = ['1D', '1W', '1M', '3M', '6M', '1Y'];
 
   return (
@@ -17,7 +15,7 @@ const DurationSelector = () => {
               styles.durationButton,
               selectedDuration === duration && styles.selectedDurationButton,
             ]}
-            onPress={() => setSelectedDuration(duration)}
+            onPress={() => onSelectDuration(duration)}
           >
             <Text
               style={[

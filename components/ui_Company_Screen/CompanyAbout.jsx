@@ -1,20 +1,26 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { company } from '../../constants/dummyData'
 
-const CompanyAbout = () => {
-  const { Name, Description, Industry, Sector } = company;
+const CompanyAbout = ({ companyOverview }) => {
+  const { Name, Description, Industry, Sector } = companyOverview || {};
+
+  const formatText = (text) => {
+    if (text === null || text === undefined || (typeof text === 'string' && text.trim() === '')) {
+      return 'N/A';
+    }
+    return text;
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>About {Name.toUpperCase()}</Text>
-      <Text style={styles.description}>{Description}</Text>
+      <Text style={styles.header}>About {formatText(Name)?.toUpperCase()}</Text>
+      <Text style={styles.description}>{formatText(Description)}</Text>
       <View style={styles.tagsContainer}>
         <View style={styles.tag}>
-          <Text style={styles.tagText}>Industry: {Industry}</Text>
+          <Text style={styles.tagText}>Industry: {formatText(Industry)}</Text>
         </View>
         <View style={styles.tag}>
-          <Text style={styles.tagText}>Sector: {Sector}</Text>
+          <Text style={styles.tagText}>Sector: {formatText(Sector)}</Text>
         </View>
       </View>
     </View>

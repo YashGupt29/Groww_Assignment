@@ -15,6 +15,7 @@ export const fetchTopGainersLosers = async () => {
         apikey: ALPHAVANTAGE_API_KEY,
       },
     });
+    console.log("data",response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching top gainers and losers:', error);

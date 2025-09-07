@@ -22,7 +22,6 @@ const StockListScreen = ({ navigation, route }) => {
 
   const loadMoreItems = useCallback(() => {
     if (isLoading) return; 
-
     setIsLoading(true);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
