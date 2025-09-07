@@ -10,6 +10,7 @@ import { getTabBarIcon } from './utils/getTabBarIcon';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CompanyScreen from './screens/CompanyScreen';
 import CustomCompanyHeader from './components/CustomCompanyHeader'; 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 const Tab = createBottomTabNavigator();
@@ -32,12 +33,16 @@ function Tabs() {
   );
 }
 
+// Move header definition outside the component to avoid re-rendering
+const renderCompanyHeader = (props) => <CustomCompanyHeader {...props} />;
+
 function App() {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-        <Stack.Screen
+    <GestureHandlerRootView style={styles.rootView}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+          <Stack.Screen
             name="Tabs"
             component={Tabs}
             options={{ headerShown: false }}
@@ -45,22 +50,21 @@ function App() {
           <Stack.Screen
             name="CompanyScreen"
             component={CompanyScreen}
-            options={({ navigation, route }) => ({
-              header: (props) => <CustomCompanyHeader {...props} />,
+            options={{
+              header: renderCompanyHeader,
               title: 'Detail Overview',
-            })}
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  rootView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

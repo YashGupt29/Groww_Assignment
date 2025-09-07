@@ -4,20 +4,31 @@ import StockChart from '../components/graph/StockChart'
 import { stockData } from '../constants/dummyData'
 
 const CompanyScreen = () => {
-  // Transform the dummy data into the format expected by StockChart
   const chartData = Object.keys(stockData.TimeSeriesDaily).map(date => ({
     date: date,
     close: stockData.TimeSeriesDaily[date].close,
-  })).reverse(); // Reverse to have the latest date on the right
+  })).reverse(); 
 
   return (
     <View>
       <Text>CompanyOverview</Text>
+      <View style={styles.chartWrapper}> 
       <StockChart data={chartData} />
+      </View>
     </View>
   )
 }
 
+
 export default CompanyScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1, // This is the most important style!
+    backgroundColor: "#fff", // Or your screen's background color
+  },
+  chartWrapper: {
+    // This wrapper ensures the chart has a container to flex inside
+    flex: 1,
+  },
+});
