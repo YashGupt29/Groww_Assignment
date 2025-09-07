@@ -49,7 +49,7 @@ const StockListScreen = ({ navigation, route }) => {
     item
   }) => (
     <StockCard
-      stockName={item.name}
+      stockName={item.ticker}
       price={item.price}
       change_percentage={item.change_percentage}
       navigation={navigation}

@@ -3,7 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {  NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ExploreScreen from './screens/ExploreScreen';
-import WatchlistScreen from './screens/WatchlistScreen'; // Import the new WatchlistScreen
+import WatchlistScreen from './screens/WatchlistScreen'; 
 import { StyleSheet } from 'react-native';
 import Colors from './constants/Colors'; 
 import { getTabBarIcon } from './utils/getTabBarIcon';
@@ -12,6 +12,8 @@ import CompanyScreen from './screens/CompanyScreen';
 import StockListScreen from './screens/StockListScreen';
 import CustomCompanyHeader from './components/CustomCompanyHeader'; 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './utils/queryClient'; 
 
 
 const Tab = createBottomTabNavigator();
@@ -38,28 +40,30 @@ const renderCompanyHeader = (props) => <CustomCompanyHeader {...props} />;
 
 function App() {
   return (
-    <GestureHandlerRootView style={styles.rootView}>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-          <Stack.Screen
-            name="Tabs"
-            component={Tabs}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="CompanyScreen"
-            component={CompanyScreen}
-            options={{
-              header: renderCompanyHeader,
-              title: 'Detail Overview',
-            }}
-          />
-          <Stack.Screen name="StockList" component={StockListScreen} options={{ headerShown: false }} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <QueryClientProvider client={queryClient}> 
+      <GestureHandlerRootView style={styles.rootView}>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator>
+            <Stack.Screen
+              name="Tabs"
+              component={Tabs}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="CompanyScreen"
+              component={CompanyScreen}
+              options={{
+                header: renderCompanyHeader,
+                title: 'Detail Overview',
+              }}
+            />
+            <Stack.Screen name="StockList" component={StockListScreen} options={{ headerShown: false }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </QueryClientProvider>
   );
 }
 

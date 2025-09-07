@@ -1,32 +1,38 @@
 import React from 'react';
-import { Text, StyleSheet, ScrollView, TextInput, Platform } from 'react-native';
+import { Text, StyleSheet, ScrollView, TextInput, Platform, ActivityIndicator, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VView from '../components/VView';
 import TTouchable from '../components/TTouchable';
 import StockCard from '../components/StockCard';
-import StockListScreen from './StockListScreen';
+import { useTopGainersLosers } from '../hooks/useTopGainersLosers';
 
 const ExploreScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const headerPaddingTop = Platform.OS === 'android' ? insets.top : 0;
+  const { data, isLoading, error } = useTopGainersLosers();
 
-  const stockData = {
-    top_gainers: [
-      { ticker: "AAPL", name: "Apple Inc", price: 177.15, change_percentage: "+4.15%" },
-      { ticker: "TSLA", name: "Tesla Inc", price: 278.50, change_percentage: "+3.42%" },
-      { ticker: "MSFT", name: "Microsoft Corp", price: 332.20, change_percentage: "+2.88%" },
-      { ticker: "GOOGL", name: "Alphabet Inc", price: 138.75, change_percentage: "+2.35%" }
-    ],
-    top_losers: [
-      { ticker: "AMZN", name: "Amazon.com Inc", price: 137.00, change_percentage: "-2.15%" },
-      { ticker: "NFLX", name: "Netflix Inc", price: 392.80, change_percentage: "-1.72%" },
-      { ticker: "NVDA", name: "NVIDIA Corp", price: 468.50, change_percentage: "-1.25%" },
-      { ticker: "META", name: "Meta Platforms", price: 302.10, change_percentage: "-0.95%" }
-    ]
-  };
+  if (isLoading) {
+    return (
+      <VView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text style={styles.loadingText}>Loading stocks...</Text>
+      </VView>
+    );
+  }
 
+  if (error) {
+    return (
+      <VView style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error: {error.message}</Text>
+      </VView>
+    );
+  }
 
-  
+  const topGainers = data?.top_gainers.slice(0, 4) || [];
+  const topLosers = data?.top_losers.slice(0, 4) || [];
+  const fullTopGainers = data?.top_gainers  || [];
+  const fullTopLosers = data?.top_losers  || [];
+
   return (
     <VView style={styles.container}>
       <VView style={[styles.header, { paddingTop: headerPaddingTop }]}>
@@ -41,15 +47,15 @@ const ExploreScreen = ({ navigation }) => {
       <ScrollView style={styles.scrollViewContent}>
         <VView style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Top Gainers</Text>
-          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: stockData.top_gainers })}>
+          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })}>
             <Text style={styles.viewAllText}>View All</Text>
           </TTouchable>
         </VView>
         <VView style={styles.cardsContainer}>
-          {stockData.top_gainers.map(stock => (
+          {topGainers.map(stock => (
             <StockCard
               key={stock.ticker}
-              stockName={stock.name}
+              stockName={stock.ticker}
               price={stock.price}
               change_percentage={stock.change_percentage}
               navigation={navigation} 
@@ -59,18 +65,18 @@ const ExploreScreen = ({ navigation }) => {
 
         <VView style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Top Losers</Text>
-          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: stockData.top_losers })}>
+          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: fullTopLosers })}>
             <Text style={styles.viewAllText}>View All</Text>
           </TTouchable>
         </VView>
         <VView style={styles.cardsContainer}>
-          {stockData.top_losers.map(stock => (
+          {topLosers.map(stock => (
             <StockCard
               key={stock.ticker}
-              stockName={stock.name}
+              stockName={stock.ticker}
               price={stock.price}
               change_percentage={stock.change_percentage}
-              onPress={() => console.log(`Stock ${stock.name} pressed`)}
+              navigation={navigation}
             />
           ))}
         </VView>
@@ -126,6 +132,27 @@ const styles = StyleSheet.create({
     gap: 10,
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#555',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
   },
 });
 
