@@ -3,7 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {  NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ExploreScreen from './screens/ExploreScreen';
-import WatchlistScreen from './screens/WatchlistScreen';
+import WatchlistScreen from './screens/WatchlistScreen'; // Import the new WatchlistScreen
 import { StyleSheet } from 'react-native';
 import Colors from './constants/Colors'; 
 import { getTabBarIcon } from './utils/getTabBarIcon';

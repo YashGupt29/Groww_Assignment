@@ -12,7 +12,7 @@ import DurationSelector from "../DurationSelector"
 
 const DATA = Array.from({ length: 100 }, (_, i) => ({
   day: i,
-  highTmp: Math.sin(i / 10) * 50 + Math.random() * 20 + 100,
+  highTmp: Math.sin(i / 10) * 100 + Math.random() * 20 + 100,
 }));
 
 const VictoryLineChart = () => {
@@ -22,22 +22,30 @@ const VictoryLineChart = () => {
   return (
     <View style={styles.chartBox}>
       <CartesianChart
-        data={chartData}
-        xKey="day"
-        yKeys={["highTmp"]}
-        domainPadding={{ top: 20, bottom: 20 }}
-        chartPressState={state}
-        yAxis={[{
-          yKeys: ["highTmp"],
-          min: 80, 
-          max: 200, 
-          lineColor: "black",
-          labelColor: "black",
-          tickCount: 0,
-          axisSide: "right",
-        }]}
-        
-      >
+          data={chartData}
+          xKey="day"
+          yKeys={["highTmp"]}
+          domain={{ 
+            y: [0, Math.max(...chartData.map(d => d.highTmp)) + 20]
+          }}
+          domainPadding={{ top: 20, bottom: 0 }}
+          chartPressState={state}
+          xAxis={{
+            lineColor: "black",   
+            labelColor: "black",
+            min:0,
+            tickCount:1,
+            axisSide:"bottom",
+          }}
+          yAxis={[{
+            yKeys: ["highTmp"],
+            min: 0,
+            lineColor: "black",   
+            labelColor: "black",
+            tickValues: [0],
+            axisSide: "left", 
+          }]}
+        >
         {({ points, chartBounds }) => {
           const topLinePath = Skia.Path.Make();
           topLinePath.moveTo(chartBounds.left, chartBounds.top + 50);

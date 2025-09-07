@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StockCard;
+export default React.memo(StockCard);
