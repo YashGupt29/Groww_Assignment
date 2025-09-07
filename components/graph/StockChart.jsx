@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { CartesianChart, Line, Area, useChartPressState } from "victory-native";
-import { LinearGradient, vec } from "@shopify/react-native-skia";
-import {Tooltip} from "../ToolTip"
+import { CartesianChart, Line, useChartPressState } from "victory-native";
+import {
+  DashPathEffect,
+  Path,
+  Skia,
+} from "@shopify/react-native-skia";
+import { Tooltip } from "../ToolTip";
 
-
-
-// Sample DATA
 const DATA = Array.from({ length: 100 }, (_, i) => ({
   day: i,
   highTmp: Math.sin(i / 10) * 50 + Math.random() * 20 + 100,
 }));
 
- const VictoryLineChart = () => {
+const VictoryLineChart = () => {
   const { state, isActive } = useChartPressState({ x: 0, y: { highTmp: 0 } });
   const [chartData] = useState(DATA);
 
@@ -24,30 +25,46 @@ const DATA = Array.from({ length: 100 }, (_, i) => ({
         yKeys={["highTmp"]}
         domainPadding={{ top: 30 }}
         chartPressState={state}
+        yAxis={[
+          {
+            yKeys: ["highTmp"],
+            lineColor: "black",
+            labelColor: "black",
+            tickCount: 0,
+            axisSide: "right",
+          },
+        ]}
       >
         {({ points, chartBounds }) => {
+          const topLinePath = Skia.Path.Make();
+          topLinePath.moveTo(chartBounds.left, chartBounds.top + 70);
+          topLinePath.lineTo(chartBounds.right, chartBounds.top + 70);
+
           return (
             <>
-              <Line 
-              points={points.highTmp} 
-              color="lightgreen" 
-              strokeWidth={3} 
-              animate={{ duration: 500, onLoad: { duration: 500 } }}
-              />
-              <Area 
-              points={points.highTmp} 
-              y0={chartBounds.bottom} 
-              color="rgba(0,255,0,0.3)"
-              animate={{ duration: 500, onLoad: { duration: 500 } }}
+              <Path
+                path={topLinePath}
+                color="black"
+                style="stroke"
+                strokeWidth={1}
+                strokeCap="butt"
               >
-                <LinearGradient 
-                  start={vec(chartBounds.bottom,200)}
-                  end={vec(chartBounds.bottom,chartBounds.bottom)}
-                  colors={["green","#90ee9050"]}
+                <DashPathEffect intervals={[3, 3]} />
+              </Path>
+              <Line
+                points={points.highTmp}
+                color="red"
+                strokeWidth={3}
+                animate={{ duration: 500, onLoad: { duration: 500 } }}
+              />
+              {isActive && (
+                <Tooltip
+                  x={state.x.position}
+                  y={state.y.highTmp.position}
+                  chartBounds={chartBounds}
+                  state={state}
                 />
-              </Area>
-              {isActive && <Tooltip x={state.x.position} y={state.y.highTmp.position}  chartBounds={chartBounds}  state={state}
-              />}
+              )}
             </>
           );
         }}
@@ -55,4 +72,5 @@ const DATA = Array.from({ length: 100 }, (_, i) => ({
     </View>
   );
 };
+
 export default VictoryLineChart;
