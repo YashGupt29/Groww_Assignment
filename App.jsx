@@ -16,7 +16,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './utils/queryClient'; 
 import CustomThemeTabBarButton from './components/ThemeToggleButton';
 import { Provider } from 'react-redux';
-import { store } from './src/store';
+import { store } from './utils/store';
 import Toast from 'react-native-toast-message';
 
 export const ThemeContext = React.createContext();

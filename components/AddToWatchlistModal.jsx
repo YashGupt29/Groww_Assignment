@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Text, TextInput, TouchableOpacity, View, StyleSheet, Dimensions,Pressable } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
-import { createWatchlist, addToWatchlist } from '../src/store/watchlistSlice';
+import { createWatchlist, addToWatchlist } from '../slices/watchlistSlice';
 import Toast from 'react-native-toast-message';
 
 const screenHeight = Dimensions.get('window').height;

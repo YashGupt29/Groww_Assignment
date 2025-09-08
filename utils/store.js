@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import watchlistReducer from './watchlistSlice';
+import watchlistReducer from '../slices/watchlistSlice';
 
 export const store = configureStore({
   reducer: {
