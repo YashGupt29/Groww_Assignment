@@ -1,21 +1,41 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Text, StyleSheet, ScrollView, TextInput, Platform, ActivityIndicator, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VView from '../components/VView';
 import TTouchable from '../components/TTouchable';
 import StockCard from '../components/StockCard';
 import { useTopGainersLosers } from '../hooks/useTopGainersLosers';
+import { fetchSymbolSearch } from '../services/fetchSymbolSearch';
 
 const ExploreScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const headerPaddingTop = Platform.OS === 'android' ? insets.top : 0;
-  const { data, isLoading, error, refetch } = useTopGainersLosers();
+  const { data, isLoading, error, refetch ,isRefetching } = useTopGainersLosers();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  useEffect(() => {
+    const handler = setTimeout(async () => {
+      if (searchQuery.length > 0) {
+        setSearchLoading(true);
+        const results = await fetchSymbolSearch(searchQuery);
+        setSearchResults(results);
+        setSearchLoading(false);
+      } else {
+        setSearchResults([]);
+      }
+    }, 500); 
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
 
   const onRefresh = useCallback(() => {
     refetch();
   }, [refetch]);
 
-  if (isLoading) { // Show initial loading
+  if (isLoading || isRefetching) { 
     return (
       <VView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -44,7 +64,9 @@ const ExploreScreen = ({ navigation }) => {
         <TextInput
           style={styles.searchBar}
           placeholder="Search here..."
-          placeholderTextColor="#424242" 
+          placeholderTextColor="#424242"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </VView>
       <ScrollView 
@@ -53,43 +75,71 @@ const ExploreScreen = ({ navigation }) => {
           <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
       >
-        <VView style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Top Gainers</Text>
-          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })}>
-            <Text style={styles.viewAllText}>View All</Text>
-          </TTouchable>
-        </VView>
-        <VView style={styles.cardsContainer}>
-          {topGainers.map(stock => (
-            <StockCard
-              key={stock.ticker}
-              stockName={stock.ticker}
-              price={stock.price}
-              change_percentage={stock.change_percentage}
-              navigation={navigation} 
-              stockData={stock}
-            />
-          ))}
-        </VView>
+        {searchLoading ? (
+          <VView style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={styles.loadingText}>Searching stocks...</Text>
+          </VView>
+        ) : searchResults.length > 0 ? (
+          <VView style={styles.cardsContainer}>
+            {searchResults.map((stock) => (
+              <StockCard
+                key={stock["1. symbol"]}
+                stockName={stock["2. name"]}
+                price={parseFloat(stock["9. matchScore"]).toFixed(2)}
+                change_percentage={stock["8. currency"]}
+                country={stock["4. region"]}
+                navigation={navigation}
+                stockData={stock}
+                isSearchResult={true}
+              />
+            ))}
+          </VView>
+        ) : searchQuery.length > 0 ? (
+          <VView style={styles.errorContainer}>
+            <Text style={styles.errorText}>No results found for "{searchQuery}".</Text>
+          </VView>
+        ) : (
+          <>
+            <VView style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Top Gainers</Text>
+              <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })}>
+                <Text style={styles.viewAllText}>View All</Text>
+              </TTouchable>
+            </VView>
+            <VView style={styles.cardsContainer}>
+              {topGainers.map(stock => (
+                <StockCard
+                  key={stock.ticker}
+                  stockName={stock.ticker}
+                  price={stock.price}
+                  change_percentage={stock.change_percentage}
+                  navigation={navigation} 
+                  stockData={stock}
+                />
+              ))}
+            </VView>
 
-        <VView style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Top Losers</Text>
-          <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: fullTopLosers })}>
-            <Text style={styles.viewAllText}>View All</Text>
-          </TTouchable>
-        </VView>
-        <VView style={styles.cardsContainer}>
-          {topLosers.map(stock => (
-            <StockCard
-              key={stock.ticker}
-              stockName={stock.ticker}
-              price={stock.price}
-              change_percentage={stock.change_percentage}
-              navigation={navigation}
-              stockData={stock}
-            />
-          ))}
-        </VView>
+            <VView style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Top Losers</Text>
+              <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: fullTopLosers })}>
+                <Text style={styles.viewAllText}>View All</Text>
+              </TTouchable>
+            </VView>
+            <VView style={styles.cardsContainer}>
+              {topLosers.map(stock => (
+                <StockCard
+                  key={stock.ticker}
+                  stockName={stock.ticker}
+                  price={stock.price}
+                  change_percentage={stock.change_percentage}
+                  navigation={navigation}
+                  stockData={stock}
+                />
+              ))}
+            </VView>
+          </>
+        )}
       </ScrollView>
     </VView>
   );

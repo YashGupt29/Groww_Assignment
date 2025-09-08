@@ -5,7 +5,7 @@ import TTouchable from './TTouchable';
 import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const StockCard = ({ stockName, price, change_percentage, navigation, stockData }) => {
+const StockCard = ({ stockName, price, change_percentage, navigation, stockData, isSearchResult, country }) => {
   const isPositive = Number.parseFloat(change_percentage) > 0;
   const onPressStockCard=()=>{
     navigation.navigate('CompanyScreen', { stock: stockData });
@@ -16,22 +16,32 @@ const StockCard = ({ stockName, price, change_percentage, navigation, stockData 
          <VView style={styles.iconPlaceholder} />
       <VView style={styles.textContainer}>
         <Text style={styles.stockName}>{stockName}</Text>
-        <Text style={[styles.price, { color: isPositive ? Colors.green : Colors.red }]}>
-        ₹ {price}
-        </Text>
-        <VView style={styles.changeContainer}>
-          
-          <Text style={[styles.changePercentage, { color: isPositive ? Colors.green : Colors.red }]}>
-            ({change_percentage})
-          </Text>
-          <VView style={[styles.changeIconBackground, { backgroundColor: isPositive ? Colors.lightGreen : Colors.lightRed }]}>
-            <Icon
-              name={isPositive ? 'arrow-up' : 'arrow-down'}
-              size={9}
-              color={isPositive ? Colors.green : Colors.red}
-            />
-          </VView>
-        </VView>
+        {isSearchResult ? (
+          <>
+            <Text style={styles.countryName}>{country}</Text>
+            <Text style={styles.searchPrice}>Match Score: {price}</Text>
+            <Text style={styles.searchCurrency}>Currency: {change_percentage}</Text>
+          </>
+        ) : (
+          <>
+            <Text style={[styles.price, { color: isPositive ? Colors.green : Colors.red }]}>
+            ₹ {price}
+            </Text>
+            <VView style={styles.changeContainer}>
+              
+              <Text style={[styles.changePercentage, { color: isPositive ? Colors.green : Colors.red }]}>
+                ({change_percentage})
+              </Text>
+              <VView style={[styles.changeIconBackground, { backgroundColor: isPositive ? Colors.lightGreen : Colors.lightRed }]}>
+                <Icon
+                  name={isPositive ? 'arrow-up' : 'arrow-down'}
+                  size={9}
+                  color={isPositive ? Colors.green : Colors.red}
+                />
+              </VView>
+            </VView>
+          </>
+        )}
       </VView>
     </TTouchable>
   );
@@ -65,6 +75,21 @@ const styles = StyleSheet.create({
   stockName: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: Colors.text,
+  },
+  countryName: {
+    fontSize: 14,
+    color: Colors.text,
+    marginBottom: 5,
+  },
+  searchPrice: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginTop: 5,
+  },
+  searchCurrency: {
+    fontSize: 12,
     color: Colors.text,
   },
   price: {
