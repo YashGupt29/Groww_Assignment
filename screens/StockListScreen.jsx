@@ -1,15 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import StockCard from '../components/StockCard';
 import VView from '../components/VView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const ITEMS_PER_PAGE = 10; 
 const CARD_HEIGHT = 125; 
 
 const StockListScreen = ({ navigation, route }) => {
-  const { title, data = [] } = route.params || {}; 
+  const { title, watchlistId } = route.params || {}; 
+  const allWatchlists = useSelector(state => state.watchlist.watchlists);
+
+  const initialData = useMemo(() => {
+    if (watchlistId && allWatchlists[watchlistId]) {
+      return allWatchlists[watchlistId].items;
+    } else {
+      return route.params?.data || [];
+    }
+  }, [watchlistId, allWatchlists, route.params?.data]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedData, setDisplayedData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,23 +28,29 @@ const StockListScreen = ({ navigation, route }) => {
   const headerPaddingTop = Platform.OS === 'android' ? insets.top : 0;
 
   useEffect(() => {
-    loadMoreItems();
-  }, [loadMoreItems, data]);
+    setCurrentPage(1);
+    setDisplayedData([]);
+    loadMoreItems(initialData, 1); 
+  }, [initialData, loadMoreItems]);
 
-  const loadMoreItems = useCallback(() => {
+  const loadMoreItems = useCallback((dataToLoad, page) => {
     if (isLoading) return; 
     setIsLoading(true);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const newItems = data.slice(startIndex, endIndex);
+    const newItems = dataToLoad.slice(startIndex, endIndex);
 
     if (newItems.length > 0) {
       setDisplayedData(prevData => [...prevData, ...newItems]);
-      setCurrentPage(prevPage => prevPage + 1);
+      setCurrentPage(page + 1);
     } else {
     }
     setIsLoading(false);
-  }, [isLoading, currentPage, data]);
+  }, [isLoading]);
+
+  const handleLoadMore = useCallback(() => {
+    loadMoreItems(initialData, currentPage);
+  }, [loadMoreItems, initialData, currentPage]);
 
   const renderFooter = () => {
     if (!isLoading) return null;
@@ -48,10 +65,11 @@ const StockListScreen = ({ navigation, route }) => {
     item
   }) => (
     <StockCard
-      stockName={item.ticker}
+      stockName={item.symbol || item.ticker}
       price={item.price}
       change_percentage={item.change_percentage}
       navigation={navigation}
+      stockData={item}
     />
   ), [navigation]);
 
@@ -63,10 +81,10 @@ const StockListScreen = ({ navigation, route }) => {
       <FlatList
         data={displayedData}
         renderItem={renderItem} 
-        keyExtractor={(item) => item.ticker} 
+        keyExtractor={(item) => item.symbol || item.ticker} 
         numColumns={2} 
         columnWrapperStyle={styles.row}
-        onEndReached={loadMoreItems}
+        onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5} 
         ListFooterComponent={renderFooter}
         initialNumToRender={10}          

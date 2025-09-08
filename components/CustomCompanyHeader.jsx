@@ -13,6 +13,7 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
   const insets = useSafeAreaInsets();
   const paddingTop = Platform.OS === 'android' ? insets.top : 0;
   const title = options.title !== undefined ? options.title : route.name;
+  const stock = route.params?.stock; 
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -25,10 +26,9 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
           </TTouchable>
       <Text style={styles.headerTitle}>{title}</Text>
       <TTouchable onPress={toggleModal} style={styles.bookmarkButton}>
-        <Icon name="bookmark-o" size={24} color="black" style={{marginRight:10}} />
+        <Icon name="bookmark-o" size={24} color="black" style={styles.bookmarkIcon} />
       </TTouchable>
-
-      <AddToWatchlistModal isVisible={isModalVisible} onClose={toggleModal} />
+      <AddToWatchlistModal isVisible={isModalVisible} onClose={toggleModal} stock={stock} />
     </VView>
   );
 };
@@ -58,6 +58,9 @@ const styles = StyleSheet.create({
   bookmarkButton: {
     paddingHorizontal: 15,
     paddingVertical: 5,
+  },
+  bookmarkIcon: {
+    marginRight: 10,
   },
 });
 

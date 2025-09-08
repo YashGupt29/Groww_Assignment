@@ -10,8 +10,8 @@ import DurationSelector from '../components/DurationSelector';
 
 const CompanyScreen = () => {
   const route = useRoute();
-  const { stockName } = route.params;
-  const { data: companyOverview, isLoading, error } = useCompanyOverview(stockName);
+  const { stock } = route.params;
+  const { data: companyOverview, isLoading, error } = useCompanyOverview(stock.ticker);
   const [selectedDuration, setSelectedDuration] = useState('1D');
 
   if (isLoading) {
@@ -37,7 +37,7 @@ const CompanyScreen = () => {
           <CompanyHeader/>
       </View>
       <View style={styles.chartWrapper}> 
-          <StockChart symbol={stockName} duration={selectedDuration} />
+          <StockChart symbol={stock.ticker} duration={selectedDuration} />
       </View>
       <DurationSelector selectedDuration={selectedDuration} onSelectDuration={setSelectedDuration} />
       <CompanyFooter companyOverview={companyOverview} />

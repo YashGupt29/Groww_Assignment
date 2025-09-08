@@ -5,40 +5,21 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import Colors from '../constants/Colors';
 import VView from '../components/VView';
-
-const dummyWatchlists = [
-  {
-    id: '1',
-    name: 'Watchlist 1',
-    stocks: [
-      { ticker: "AAPL", name: "Apple Inc", price: 177.15, change_percentage: "+4.15%" },
-      { ticker: "TSLA", name: "Tesla Inc", price: 278.50, change_percentage: "+3.42%" },
-      { ticker: "MSFT", name: "Microsoft Corp", price: 332.20, change_percentage: "+2.88%" },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Watchlist 2',
-    stocks: [
-      { ticker: "GOOGL", name: "Alphabet Inc", price: 138.75, change_percentage: "+2.35%" },
-      { ticker: "AMZN", name: "Amazon.com Inc", price: 137.00, change_percentage: "-2.15%" },
-      { ticker: "NFLX", name: "Netflix Inc", price: 392.80, change_percentage: "-1.72%" },
-    ],
-  },
-];
+import { useSelector } from 'react-redux';
 
 const WatchlistScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const headerPaddingTop = Platform.OS === 'android' ? insets.top : 0;
+  const allWatchlists = useSelector(state => state.watchlist.watchlists);
 
   const renderWatchlistItem = ({ item }) => (
     <TouchableOpacity
       style={styles.watchlistItem}
-      onPress={() => navigation.navigate('StockList', { title: item.name, data: item.stocks })}
+      onPress={() => navigation.navigate('StockList', { title: item.name, watchlistId: item.id })} 
     >
       <Text style={styles.watchlistName}>{item.name}</Text>
-      <Text style={styles.stockCount}>{item.stocks.length} stocks</Text>
+      <Text style={styles.stockCount}>{item.items.length} stocks</Text>
     </TouchableOpacity>
   );
 
@@ -47,12 +28,19 @@ const WatchlistScreen = () => {
       <VView style={[styles.header, { paddingTop: headerPaddingTop }]}>
         <Text style={styles.headerTitle}>My Watchlists</Text>
       </VView>
-      <FlatList
-        data={dummyWatchlists}
-        renderItem={renderWatchlistItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-      />
+      {Object.values(allWatchlists).length === 0 ? (
+        <View style={styles.emptyWatchlistContainer}>
+          <Text style={styles.emptyWatchlistText}>You have no watchlists.</Text>
+          <Text style={styles.emptyWatchlistText}>Create new watchlists from company detail pages.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={Object.values(allWatchlists)}
+          renderItem={renderWatchlistItem}
+          keyExtractor={(item) => item.id} 
+          contentContainerStyle={styles.listContent}
+        />
+      )}
     </VView>
   );
 };
@@ -91,12 +79,27 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
   },
+  bookmarkIcon: {
+    marginRight: 10,
+  },
   watchlistName: {
     fontSize: 16,
     fontWeight: 'bold',
   },
   stockCount: {
     fontSize: 14,
+  },
+  emptyWatchlistContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyWatchlistText: {
+    fontSize: 16,
+    color: Colors.lightText,
+    textAlign: 'center',
+    marginBottom: 5,
   },
 });
 

@@ -58,6 +58,7 @@ const ExploreScreen = ({ navigation }) => {
               price={stock.price}
               change_percentage={stock.change_percentage}
               navigation={navigation} 
+              stockData={stock}
             />
           ))}
         </VView>
@@ -76,6 +77,7 @@ const ExploreScreen = ({ navigation }) => {
               price={stock.price}
               change_percentage={stock.change_percentage}
               navigation={navigation}
+              stockData={stock}
             />
           ))}
         </VView>

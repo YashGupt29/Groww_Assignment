@@ -1,7 +1,8 @@
 const Colors = {
     primary: '#0056FF', // A primary blue color, similar to Groww's brand color
     secondary: '#00B8D4', // An accent color
-    background: '#F5F7FA', // Light grey background
+    lightBackground: '#F5F7FA', // Light grey background
+    darkBackground: '#212121', // Dark background for dark mode
     cardBackground: '#FFFFFF', // White for cards and elevated elements
     text: '#212121', // Dark text for readability
     lightText: '#757575', // Lighter text for secondary information

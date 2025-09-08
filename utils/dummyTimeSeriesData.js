@@ -1,4 +1,4 @@
-export const generateDummyTimeSeriesData = (duration, symbol = 'IBM') => {
+export const generateDummyTimeSeriesData = async (duration, symbol = 'IBM') => {
     const data = [];
     const now = new Date();
     let numDays;
@@ -27,6 +27,7 @@ export const generateDummyTimeSeriesData = (duration, symbol = 'IBM') => {
     }
 
     let basePrice = 150;
+    await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
     for (let i = 0; i < numDays; i++) {
         const date = new Date(now);
         date.setDate(now.getDate() - (numDays - 1 - i));

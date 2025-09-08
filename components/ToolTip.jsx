@@ -9,16 +9,15 @@ export const Tooltip = ({ x, y, chartBounds ,state}) => {
     const p2 = useDerivedValue(() => ({ x: x.value, y: chartBounds.bottom }));
     const font = useFont(roboto, 14);
     const label = useDerivedValue(() => {
-        const date = state.x.value ?? 'N/A'; 
-        const close = state.y.close.value ?? 'N/A';
-        return `Date: ${date}, Close: ${close}`;
+        const close = state.y.close.value.value ?? 'N/A';
+        return `Close: ₹${close}`;
       });
 
   
     return (
       <>
-        <SkiaLine p1={p1} p2={p2} color="darkgreen" strokeWidth={1} opacity={0.6} />
-        <Circle cx={x} cy={y} r={6} color="darkgreen" opacity={0.9} />
+        <SkiaLine p1={p1} p2={p2} color="darkred" strokeWidth={1} opacity={0.6} />
+        <Circle cx={x} cy={y} r={6} color="darkred" opacity={0.9} />
         <Circle cx={x} cy={y} r={3} color="white" />
         <Text
         x={x}

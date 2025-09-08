@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Text, TextInput, TouchableOpacity, View, StyleSheet, Dimensions,Pressable } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing,withSpring } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
+import { createWatchlist, addToWatchlist } from '../src/store/watchlistSlice';
+import Toast from 'react-native-toast-message';
 
 const screenHeight = Dimensions.get('window').height;
 
-const AddToWatchlistModal = ({ isVisible, onClose }) => {
+const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
   const [newWatchlistName, setNewWatchlistName] = useState('');
-  const [watchlists, setWatchlists] = useState([
-    { id: '1', name: 'Watchlist 1', checked: false },
-    { id: '2', name: 'Watchlist 2', checked: false },
-  ]);
+  const [selectedWatchlists, setSelectedWatchlists] = useState({});
+  const dispatch = useDispatch();
+  const allWatchlists = useSelector(state => state.watchlist.watchlists);
 
   const slideAnim = useSharedValue(screenHeight);
 
@@ -29,22 +31,51 @@ const AddToWatchlistModal = ({ isVisible, onClose }) => {
         });
   }, [isVisible,slideAnim]);
 
+  useEffect(() => {
+    if (isVisible && stock) {
+      const initialSelection = {};
+      Object.values(allWatchlists).forEach(watchlist => {
+        initialSelection[watchlist.id] = watchlist.items.some(item => item.symbol === stock.symbol);
+      });
+      setSelectedWatchlists(initialSelection);
+    }
+  }, [isVisible, stock, allWatchlists]);
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: slideAnim.value }],
   }));
 
-  const handleAddWatchlist = () => {
+  const handleCreateWatchlist = () => {
     if (newWatchlistName.trim() !== '') {
-      setWatchlists([...watchlists, { id: Date.now().toString(), name: newWatchlistName, checked: false }]);
+      const newId = Date.now().toString();
+      dispatch(createWatchlist({ id: newId, name: newWatchlistName.trim() }));
       setNewWatchlistName('');
+      setSelectedWatchlists(prev => ({ ...prev, [newId]: true }));
     }
   };
 
   const handleToggleWatchlist = (id) => {
-    setWatchlists(watchlists.map(list =>
-      list.id === id ? { ...list, checked: !list.checked } : list
-    ));
+    setSelectedWatchlists(prev => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const handleAddToSelectedWatchlists = () => {
+    Object.keys(selectedWatchlists).forEach(watchlistId => {
+      if (selectedWatchlists[watchlistId]) {
+        dispatch(addToWatchlist({ watchlistId, stock }));
+      }
+    });
+    onClose();
+    Toast.show({
+      type: 'success',
+      text1: 'Watchlist Updated',
+      text2: `Stock ${stock.symbol || 'Unknown Stock'} added to selected watchlists.`,
+      visibilityTime: 3000,
+      autoHide: true,
+      topOffset: 30,
+    });
+  };
+
+  const hasSelectedWatchlists = Object.values(selectedWatchlists).some(selected => selected);
 
   return (
     <Modal
@@ -66,19 +97,28 @@ const AddToWatchlistModal = ({ isVisible, onClose }) => {
               value={newWatchlistName}
               onChangeText={setNewWatchlistName}
             />
-            <TouchableOpacity style={styles.addButton} onPress={handleAddWatchlist}>
-              <Text style={styles.addButtonText}>Add</Text>
+            <TouchableOpacity style={styles.addButton} onPress={handleCreateWatchlist}>
+              <Text style={styles.addButtonText}>Create</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.watchlistOptions}>
-            {watchlists.map(list => (
-              <TouchableOpacity key={list.id} style={styles.checkboxContainer} onPress={() => handleToggleWatchlist(list.id)}>
-                <View style={[styles.checkbox, list.checked && styles.checkedCheckbox]} />
-                <Text style={styles.watchlistName}>{list.name}</Text>
+            {Object.values(allWatchlists).map(watchlist => (
+              <TouchableOpacity key={watchlist.id} style={styles.checkboxContainer} onPress={() => handleToggleWatchlist(watchlist.id)}>
+                <View style={[styles.checkbox, selectedWatchlists[watchlist.id] && styles.checkedCheckbox]} />
+                <Text style={styles.watchlistName}>{watchlist.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
+
+          {hasSelectedWatchlists && ( 
+            <TouchableOpacity 
+              style={styles.actionButton}
+              onPress={handleAddToSelectedWatchlists}
+            >
+              <Text style={styles.actionButtonText}>Add to Selected Watchlists</Text>
+            </TouchableOpacity>
+          )}
         </Animated.View>
       </Pressable>
     </Modal>
@@ -153,6 +193,21 @@ const styles = StyleSheet.create({
   },
   watchlistName: {
     fontSize: 16,
+  },
+  actionButton: {
+    backgroundColor: '#28a745',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    alignSelf: 'center',
+    width: '80%',
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

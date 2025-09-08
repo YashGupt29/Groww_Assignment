@@ -5,10 +5,10 @@ import TTouchable from './TTouchable';
 import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const StockCard = ({ stockName, price, change_percentage,navigation }) => {
+const StockCard = ({ stockName, price, change_percentage, navigation, stockData }) => {
   const isPositive = Number.parseFloat(change_percentage) > 0;
   const onPressStockCard=()=>{
-    navigation.navigate('CompanyScreen', { stockName });
+    navigation.navigate('CompanyScreen', { stock: stockData });
   };
 
   return (
