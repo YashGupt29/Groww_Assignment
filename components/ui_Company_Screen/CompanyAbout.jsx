@@ -55,7 +55,7 @@ const styles = (currentColors) => StyleSheet.create({
     flexWrap: 'wrap',
   },
   tag: {
-    backgroundColor: currentColors.inputBackground,
+    backgroundColor: currentColors.brown,
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -64,6 +64,7 @@ const styles = (currentColors) => StyleSheet.create({
   },
   tagText: {
     fontSize: 12,
-    color: currentColors.brown,
+    color: "white",
+    fontWeight:700
   },
 })

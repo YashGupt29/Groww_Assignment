@@ -20,7 +20,7 @@ const Colors = {
         fontWeight: '900',
     },
     dark: {
-        primary: '#0056FF',
+        primary: '#465AAF',
         secondary: '#00B8D4',
         background: '#000000', // Black background for dark mode
         cardBackground: '#212121', // Darker background for cards

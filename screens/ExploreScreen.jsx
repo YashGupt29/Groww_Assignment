@@ -109,8 +109,8 @@ const ExploreScreen = ({ navigation }) => {
           <>
             <VView style={styles(currentColors).sectionHeader}>
               <Text style={styles(currentColors).sectionTitle}>Top Gainers</Text>
-              <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })}>
-                <Text style={styles(currentColors).viewAllText}>View All</Text>
+              <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })} style={styles(currentColors).viewAllButton}>
+                <Text style={styles(currentColors).viewAllButtonText}>View All</Text>
               </TTouchable>
             </VView>
             <VView style={styles(currentColors).cardsContainer}>
@@ -128,8 +128,8 @@ const ExploreScreen = ({ navigation }) => {
 
             <VView style={styles(currentColors).sectionHeader}>
               <Text style={styles(currentColors).sectionTitle}>Top Losers</Text>
-              <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: fullTopLosers })}>
-                <Text style={styles(currentColors).viewAllText}>View All</Text>
+              <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: fullTopLosers })} style={styles(currentColors).viewAllButton}>
+                <Text style={styles(currentColors).viewAllButtonText}>View All</Text>
               </TTouchable>
             </VView>
             <VView style={styles(currentColors).cardsContainer}>
@@ -225,6 +225,17 @@ const styles = (currentColors) => StyleSheet.create({
     fontSize: 16,
     color: currentColors.red,
     textAlign: 'center',
+  },
+  viewAllButton: {
+    backgroundColor: currentColors.primary,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  viewAllButtonText: {
+    color: currentColors.white,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 

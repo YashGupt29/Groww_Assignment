@@ -5,37 +5,36 @@ export const generateDummyTimeSeriesData = async (duration, symbol = 'IBM') => {
 
     switch (duration) {
       case '1D':
-        numDays = 20; // Approximately 1 day of 5-min intervals shown as daily for simplicity
+        numDays = 200; 
         break;
       case '1W':
-        numDays = 7; 
+        numDays = 300; 
         break;
       case '1M':
-        numDays = 30;
+        numDays = 400;
         break;
       case '3M':
-        numDays = 90;
+        numDays = 500;
         break;
       case '6M':
-        numDays = 180;
+        numDays = 600;
         break;
       case '1Y':
-        numDays = 365;
+        numDays = 700;
         break;
       default:
-        numDays = 30; // Default to 1 month
+        numDays = 200; 
     }
 
     let basePrice = 150;
-    await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
+    await new Promise(resolve => setTimeout(resolve, 2000)); 
     for (let i = 0; i < numDays; i++) {
         const date = new Date(now);
         date.setDate(now.getDate() - (numDays - 1 - i));
         const formattedDate = date.toISOString().slice(0, 10);
         
-        // Simulate price fluctuation
-        basePrice += (Math.random() - 0.5) * 5; // Random fluctuation up to +/- 2.5
-        const closePrice = Math.max(10, basePrice + (Math.random() * 10 - 5)); // Ensure price doesn't go too low
+        basePrice += (Math.random() - 0.5) * 5; 
+        const closePrice = Math.max(10, basePrice + (Math.random() * 10 - 5)); 
 
         data.push({
             date: formattedDate,

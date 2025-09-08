@@ -48,6 +48,7 @@ const StockChart = ({ symbol, duration }) => {
   return (
     <View style={styles(currentColors).chartBox}>
       <CartesianChart
+          key={`${symbol}-${duration}`}
           data={chartData}
           xKey="date"
           yKeys={["close"]}
