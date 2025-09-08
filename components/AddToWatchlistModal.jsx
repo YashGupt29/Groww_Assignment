@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Text, TextInput, TouchableOpacity, View, StyleSheet, Dimensions,Pressable } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
-import { createWatchlist, addToWatchlist } from '../slices/watchlistSlice';
+import { createWatchlist, addToWatchlist, removeFromWatchlist } from '../slices/watchlistSlice';
 import Toast from 'react-native-toast-message';
 import Colors from '../constants/Colors';
 import { ThemeContext } from '../App';
@@ -63,24 +63,36 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
     setSelectedWatchlists(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleAddToSelectedWatchlists = () => {
-    Object.keys(selectedWatchlists).forEach(watchlistId => {
-      if (selectedWatchlists[watchlistId]) {
+  const handleSaveWatchlists = () => {
+    const currentWatchlistIds = Object.keys(allWatchlists);
+    const selectedWatchlistIds = Object.keys(selectedWatchlists).filter(id => selectedWatchlists[id]);
+
+    currentWatchlistIds.forEach(watchlistId => {
+      const isInSelected = selectedWatchlistIds.includes(watchlistId);
+      const isCurrentlyInWatchlist = allWatchlists[watchlistId].items.some(item => item.ticker === stock.ticker);
+
+      if (isInSelected && !isCurrentlyInWatchlist) {
         dispatch(addToWatchlist({ watchlistId, stock }));
+      } else if (!isInSelected && isCurrentlyInWatchlist) {
+        dispatch(removeFromWatchlist({ watchlistId, ticker: stock.ticker }));
       }
     });
     onClose();
+    const hasRemainingWatchlists = Object.values(selectedWatchlists).some(selected => selected);
+    const toastText2 = hasRemainingWatchlists 
+      ? `${stock.ticker} watchlists have been updated.`
+      : `${stock.ticker} has been removed from all watchlists.`;
+    const toastText1 = hasRemainingWatchlists ? 'Watchlist Updated' : 'Watchlist Successfully Removed';
+
     Toast.show({
       type: 'success',
-      text1: 'Watchlist Updated',
-      text2: `Stock ${stock.ticker} added to selected watchlists.`,
+      text1: toastText1,
+      text2: toastText2,
       visibilityTime: 3000,
       autoHide: true,
       bottomOffset: 30,
     });
   };
-
-  const hasSelectedWatchlists = Object.values(selectedWatchlists).some(selected => selected);
 
   return (
     <Modal
@@ -117,14 +129,12 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
             ))}
           </View>
 
-          {hasSelectedWatchlists && ( 
-            <TouchableOpacity 
-              style={styles(currentColors).actionButton}
-              onPress={handleAddToSelectedWatchlists}
-            >
-              <Text style={styles(currentColors).actionButtonText}>Add to Selected Watchlists</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity 
+            style={[styles(currentColors).actionButton, { backgroundColor: currentColors.primary }]}
+            onPress={handleSaveWatchlists}
+          >
+            <Text style={styles(currentColors).actionButtonText}>Save</Text>
+          </TouchableOpacity>
         </Animated.View>
       </Pressable>
     </Modal>
@@ -205,7 +215,6 @@ const styles = (currentColors) => StyleSheet.create({
     color: currentColors.text,
   },
   actionButton: {
-    backgroundColor: currentColors.green,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 20,
