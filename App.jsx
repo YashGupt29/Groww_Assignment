@@ -113,7 +113,7 @@ function App() {
         </SafeAreaProvider>
         </GestureHandlerRootView>
       </QueryClientProvider>
-      <Toast config={ToastConfig} position='bottom' />
+      <Toast config={ToastConfig} position='bottom' bottomOffset={0} />
     </Provider>
   );
 }
@@ -127,6 +127,8 @@ const styles = (currentColors) => StyleSheet.create({
     position: 'absolute',
     backgroundColor: currentColors.cardBackground,
     elevation: 0,
+    bottom: 0,
+    borderTopWidth: 0
   },
 });
 

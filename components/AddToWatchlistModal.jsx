@@ -6,10 +6,11 @@ import { createWatchlist, addToWatchlist, removeFromWatchlist } from '../slices/
 import Toast from 'react-native-toast-message';
 import Colors from '../constants/Colors';
 import { ThemeContext } from '../App';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const screenHeight = Dimensions.get('window').height;
 
-const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
+const AddToWatchlistModal = ({ isVisible, onClose, stock ,onSetModal}) => {
   const [newWatchlistName, setNewWatchlistName] = useState('');
   const [selectedWatchlists, setSelectedWatchlists] = useState({});
   const dispatch = useDispatch();
@@ -85,12 +86,16 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
     const toastText1 = hasRemainingWatchlists ? 'Watchlist Updated' : 'Watchlist Successfully Removed';
 
     Toast.show({
-      type: 'success',
+      type: 'watchlistSuccess',
       text1: toastText1,
       text2: toastText2,
       visibilityTime: 3000,
       autoHide: true,
       bottomOffset: 30,
+      props: {
+        currentColors: currentColors,
+        onButtonPress: () => onSetModal(true) 
+      },
     });
   };
 
@@ -123,7 +128,15 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
           <View style={styles(currentColors).watchlistOptions}>
             {Object.values(allWatchlists).map(watchlist => (
               <TouchableOpacity key={watchlist.id} style={styles(currentColors).checkboxContainer} onPress={() => handleToggleWatchlist(watchlist.id)}>
-                <View style={[styles(currentColors).checkbox, selectedWatchlists[watchlist.id] && styles(currentColors).checkedCheckbox]} />
+                <View style={[styles(currentColors).customCheckbox, selectedWatchlists[watchlist.id] && { backgroundColor: currentColors.primary, borderColor: currentColors.primary }]}>
+                  {selectedWatchlists[watchlist.id] && (
+                    <Icon
+                      name="check"
+                      size={14}
+                      color={theme === 'light' ? currentColors.white : currentColors.lightText}
+                    />
+                  )}
+                </View>
                 <Text style={styles(currentColors).watchlistName}>{watchlist.name}</Text>
               </TouchableOpacity>
             ))}
@@ -198,17 +211,15 @@ const styles = (currentColors) => StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  checkbox: {
+  customCheckbox: {
     width: 20,
     height: 20,
     borderWidth: 2,
     borderColor: currentColors.borderColor,
     borderRadius: 4,
     marginRight: 10,
-  },
-  checkedCheckbox: {
-    backgroundColor: currentColors.primary,
-    borderColor: currentColors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   watchlistName: {
     fontSize: 16,
@@ -220,7 +231,7 @@ const styles = (currentColors) => StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
     alignSelf: 'center',
-    width: '80%',
+    width: '100%',
   },
   actionButtonText: {
     color: currentColors.white,

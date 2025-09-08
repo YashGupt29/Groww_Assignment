@@ -24,7 +24,7 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
 
   const dispatch = useDispatch();
   const isStockInWatchlist = useSelector(state => 
-    state.watchlist.watchlists['default']?.items.some(item => item.ticker === stock?.ticker)
+    state.watchlist.watchlists.default?.items.some(item => item.ticker === stock?.ticker)
   );
 
   const toggleModal = () => {
@@ -43,8 +43,8 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
         visibilityTime: 3000,
         autoHide: true,
         bottomOffset: 30,
-        props: { 
-          currentColors: currentColors, 
+        props: {
+          currentColors: currentColors,
           onButtonPress: toggleModal 
         },
       });
@@ -65,7 +65,7 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
           style={styles(currentColors).bookmarkIcon} 
         />
       </TTouchable>
-      <AddToWatchlistModal isVisible={isModalVisible} onClose={toggleModal} stock={stock} />
+      <AddToWatchlistModal isVisible={isModalVisible} onClose={toggleModal} stock={stock}  onSetModal={setModalVisible}/>
     </VView>
   );
 };
@@ -90,7 +90,7 @@ const styles = (currentColors) => StyleSheet.create({
     fontWeight: 'bold',
     color: currentColors.text,
     textAlign: 'left',
-    marginLeft: 0, // Ensure no extra margin
+    marginLeft: 0, 
   },
   bookmarkButton: {
     paddingHorizontal: 15,
