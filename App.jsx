@@ -19,6 +19,7 @@ import { Provider } from 'react-redux';
 import { store } from './utils/store';
 import Toast from 'react-native-toast-message';
 import { ToastConfig } from './components/ToastConfig';
+import SplashScreen from './screens/SplashScreen';
 
 export const ThemeContext = React.createContext();
 
@@ -58,17 +59,25 @@ const renderCompanyHeader = (props) => <CustomCompanyHeader {...props} />;
 function App() {
   const colorScheme = useColorScheme();
   const [theme, setTheme] = useState(colorScheme);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme: newColorScheme }) => {
       setTheme(newColorScheme);
     });
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
     return () => subscription.remove();
   }, []);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <Provider store={store}>

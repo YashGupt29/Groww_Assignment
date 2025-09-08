@@ -8,7 +8,7 @@ export const fetchCompanyOverview = async (symbol) => {
     const response = await axios.get(API_BASE_URL, {
       params: {
         function: 'OVERVIEW',
-        symbol: "IBM",    
+        symbol: symbol,    
         apikey: ALPHAVANTAGE_API_KEY,
       },
     });
