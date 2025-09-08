@@ -93,9 +93,10 @@ const styles = (currentColors) => StyleSheet.create({
     marginBottom: 5,
   },
   stockName: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     color: currentColors.text,
+    marginBottom:10
   },
   countryName: {
     fontSize: 14,
