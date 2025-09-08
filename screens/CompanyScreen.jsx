@@ -11,7 +11,7 @@ import { ThemeContext } from '../App';
 
 const CompanyScreen = () => {
   const route = useRoute();
-  const { stock } = route.params;
+  const { stock, companyLogoUrl } = route.params;
   const { data: companyOverview, isLoading, error } = useCompanyOverview(stock.ticker);
   const [selectedDuration, setSelectedDuration] = useState('1D');
 
@@ -38,7 +38,7 @@ const CompanyScreen = () => {
   return (
     <ScrollView style={styles(currentColors).screen}>
       <View>
-          <CompanyHeader/>
+          <CompanyHeader companyLogoUrl={companyLogoUrl}/>
       </View>
       <View style={styles(currentColors).chartWrapper}> 
           <StockChart symbol={stock.ticker} duration={selectedDuration} />

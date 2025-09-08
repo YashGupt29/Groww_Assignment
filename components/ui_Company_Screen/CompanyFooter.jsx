@@ -84,6 +84,7 @@ const styles = (currentColors) => StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+    marginTop:20
   },
   label: {
     fontSize: 12,
@@ -108,6 +109,7 @@ const styles = (currentColors) => StyleSheet.create({
   arrowIcon: {
     fontSize: 12,
     color: currentColors.text,
+    marginRight:15
   },
   horizontalLine: {
     width: '100%',
@@ -120,6 +122,7 @@ const styles = (currentColors) => StyleSheet.create({
     gap: 6,
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginBottom:10
   },
   metricItem: {
     width: '25%', 

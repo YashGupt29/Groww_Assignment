@@ -1,23 +1,33 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, Image } from 'react-native';
 import VView from './VView';
 import TTouchable from './TTouchable';
 import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ThemeContext } from '../App';
+import { dummyCompanyNames, generateLogoUrl } from '../utils/companyLogos';
 
 const StockCard = ({ stockName, price, change_percentage, navigation, stockData, isSearchResult, country }) => {
-  const isPositive = Number.parseFloat(change_percentage) > 0;
-  const onPressStockCard=()=>{
-    navigation.navigate('CompanyScreen', { stock: stockData });
-  };
-
   const { theme } = React.useContext(ThemeContext);
-  const currentColors = Colors[theme];
+  const [companyLogoUrl, setCompanyLogoUrl] = React.useState('');
+  const isPositive = Number.parseFloat(change_percentage) > 0;
+  const currentColors = Colors[theme];  
 
+  React.useEffect(() => {
+    const randomCompanyName = dummyCompanyNames[Math.floor(Math.random() * dummyCompanyNames.length)];
+    setCompanyLogoUrl(generateLogoUrl(randomCompanyName));
+  }, [stockName]);
+
+  const onPressStockCard=()=>{
+    navigation.navigate('CompanyScreen', { stock: stockData, companyLogoUrl: companyLogoUrl });
+  };
   return (
     <TTouchable onPress={onPressStockCard} style={styles(currentColors).card}>
-         <VView style={styles(currentColors).iconPlaceholder} />
+         {companyLogoUrl ? (
+        <Image source={{ uri: companyLogoUrl }} style={styles(currentColors).companyLogo} />
+      ) : (
+        <VView style={styles(currentColors).iconPlaceholder} />
+      )}
       <VView style={styles(currentColors).textContainer}>
         <Text style={styles(currentColors).stockName}>{stockName}</Text>
         {isSearchResult ? (
@@ -74,6 +84,12 @@ const styles = (currentColors) => StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: currentColors.inputBackground,
+    marginBottom: 5,
+  },
+  companyLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     marginBottom: 5,
   },
   stockName: {
