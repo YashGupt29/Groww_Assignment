@@ -15,16 +15,16 @@ const watchlistSlice = createSlice({
     addToWatchlist: (state, action) => {
       const { watchlistId, stock } = action.payload;
       if (state.watchlists[watchlistId]) {
-        const existingStock = state.watchlists[watchlistId].items.find(item => item.symbol === stock.symbol);
+        const existingStock = state.watchlists[watchlistId].items.find(item => item.ticker === stock.ticker);
         if (!existingStock) {
           state.watchlists[watchlistId].items.push(stock);
         }
       }
     },
     removeFromWatchlist: (state, action) => {
-      const { watchlistId, symbol } = action.payload;
+      const { watchlistId, ticker } = action.payload;
       if (state.watchlists[watchlistId]) {
-        state.watchlists[watchlistId].items = state.watchlists[watchlistId].items.filter(item => item.symbol !== symbol);
+        state.watchlists[watchlistId].items = state.watchlists[watchlistId].items.filter(item => item.ticker !== ticker);
       }
     },
   },

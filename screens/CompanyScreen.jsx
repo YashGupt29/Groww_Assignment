@@ -1,7 +1,6 @@
 import { StyleSheet, ScrollView, View, Text, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import StockChart from '../components/graph/StockChart'
-import { stockData } from '../constants/dummyData'
 import CompanyHeader from  '../components/CompanyHeader'
 import CompanyFooter from "../components/ui_Company_Screen/CompanyFooter"
 import { useRoute } from '@react-navigation/native';

@@ -14,7 +14,6 @@ import { ActivityIndicator, Text } from 'react-native';
 const StockChart = ({ symbol, duration }) => {
   const { data: chartData, isLoading, error } = useTimeSeriesData(symbol, duration);
   const { state, isActive } = useChartPressState({ x: 0, y: { close: 0 } });
-  console.log(chartData);
 
   if (isLoading) {
     return (

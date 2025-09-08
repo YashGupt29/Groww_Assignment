@@ -29,13 +29,13 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
           damping: 20,
           stiffness: 150,
         });
-  }, [isVisible,slideAnim]);
+  }, [isVisible,slideAnim, stock]);
 
   useEffect(() => {
     if (isVisible && stock) {
       const initialSelection = {};
       Object.values(allWatchlists).forEach(watchlist => {
-        initialSelection[watchlist.id] = watchlist.items.some(item => item.symbol === stock.symbol);
+        initialSelection[watchlist.id] = watchlist.items.some(item => item.ticker === stock.ticker);
       });
       setSelectedWatchlists(initialSelection);
     }
@@ -68,7 +68,7 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
     Toast.show({
       type: 'success',
       text1: 'Watchlist Updated',
-      text2: `Stock ${stock.symbol || 'Unknown Stock'} added to selected watchlists.`,
+      text2: `Stock ${stock.ticker || 'Unknown Stock'} added to selected watchlists.`,
       visibilityTime: 3000,
       autoHide: true,
       topOffset: 30,
