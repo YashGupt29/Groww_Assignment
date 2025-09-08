@@ -97,7 +97,7 @@ function App() {
         </SafeAreaProvider>
         </GestureHandlerRootView>
       </QueryClientProvider>
-      <Toast />
+      <Toast position='bottom' />
     </Provider>
   );
 }

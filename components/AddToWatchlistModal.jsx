@@ -68,10 +68,10 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
     Toast.show({
       type: 'success',
       text1: 'Watchlist Updated',
-      text2: `Stock ${stock.ticker || 'Unknown Stock'} added to selected watchlists.`,
+      text2: `Stock ${stock.ticker} added to selected watchlists.`,
       visibilityTime: 3000,
       autoHide: true,
-      topOffset: 30,
+      bottomOffset: 30,
     });
   };
 

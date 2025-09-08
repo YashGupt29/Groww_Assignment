@@ -78,25 +78,33 @@ const StockListScreen = ({ navigation, route }) => {
       <VView style={[styles.header, { paddingTop: headerPaddingTop }]}>
         <Text style={styles.headerTitle}>{title}</Text>
       </VView>
-      <FlatList
-        data={displayedData}
-        renderItem={renderItem} 
-        keyExtractor={(item) => item.symbol || item.ticker} 
-        numColumns={2} 
-        columnWrapperStyle={styles.row}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5} 
-        ListFooterComponent={renderFooter}
-        initialNumToRender={10}          
-        maxToRenderPerBatch={10}        
-        windowSize={7}                  
-        removeClippedSubviews={true}     
-        getItemLayout={(flatListData, index) => ({
-          length: CARD_HEIGHT,          
-          offset: CARD_HEIGHT * index,
-          index,
-        })}
-      />
+      {initialData.length === 0 ? (
+        <View style={styles.emptyWatchlistContainer}>
+          <Text style={styles.emptyWatchlistText}>
+            {watchlistId ? "Add Stocks To your watchlist" : "Error fetching data. Please try again later."}
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={displayedData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.symbol || item.ticker}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={7}
+          removeClippedSubviews={true}
+          getItemLayout={(flatListData, index) => ({
+            length: CARD_HEIGHT,
+            offset: CARD_HEIGHT * index,
+            index,
+          })}
+        />
+      )}
     </VView>
   );
 };
@@ -127,6 +135,17 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     borderTopWidth: 1,
     borderColor: '#CED0CE',
+  },
+  emptyWatchlistContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyWatchlistText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
   },
 });
 

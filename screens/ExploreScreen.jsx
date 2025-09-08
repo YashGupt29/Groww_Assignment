@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, StyleSheet, ScrollView, TextInput, Platform, ActivityIndicator } from 'react-native';
+import React, { useCallback } from 'react';
+import { Text, StyleSheet, ScrollView, TextInput, Platform, ActivityIndicator, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VView from '../components/VView';
 import TTouchable from '../components/TTouchable';
@@ -9,9 +9,13 @@ import { useTopGainersLosers } from '../hooks/useTopGainersLosers';
 const ExploreScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const headerPaddingTop = Platform.OS === 'android' ? insets.top : 0;
-  const { data, isLoading, error } = useTopGainersLosers();
+  const { data, isLoading, error, refetch } = useTopGainersLosers();
 
-  if (isLoading) {
+  const onRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  if (isLoading) { // Show initial loading
     return (
       <VView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -43,7 +47,12 @@ const ExploreScreen = ({ navigation }) => {
           placeholderTextColor="#424242" 
         />
       </VView>
-      <ScrollView style={styles.scrollViewContent}>
+      <ScrollView 
+        style={styles.scrollViewContent}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+        }
+      >
         <VView style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Top Gainers</Text>
           <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })}>
