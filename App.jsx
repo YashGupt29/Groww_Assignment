@@ -18,6 +18,7 @@ import CustomThemeTabBarButton from './components/ThemeToggleButton';
 import { Provider } from 'react-redux';
 import { store } from './utils/store';
 import Toast from 'react-native-toast-message';
+import { ToastConfig } from './components/ToastConfig';
 
 export const ThemeContext = React.createContext();
 
@@ -112,7 +113,7 @@ function App() {
         </SafeAreaProvider>
         </GestureHandlerRootView>
       </QueryClientProvider>
-      <Toast position='bottom' />
+      <Toast config={ToastConfig} position='bottom' />
     </Provider>
   );
 }

@@ -7,6 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Colors from '../constants/Colors';
 import AddToWatchlistModal from './AddToWatchlistModal';
 import { ThemeContext } from '../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToWatchlist } from '../slices/watchlistSlice';
+import Toast from 'react-native-toast-message';
 
 
 const CustomCompanyHeader = ({ navigation, route, options }) => {
@@ -19,8 +22,33 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
   const { theme } = React.useContext(ThemeContext);
   const currentColors = Colors[theme];
 
+  const dispatch = useDispatch();
+  const isStockInWatchlist = useSelector(state => 
+    state.watchlist.watchlists['default']?.items.some(item => item.ticker === stock?.ticker)
+  );
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+  };
+
+  const handleBookmarkPress = () => {
+    if (isStockInWatchlist) {
+      toggleModal();
+    } else {
+      dispatch(addToWatchlist({ watchlistId: 'default', stock }));
+      Toast.show({
+        type: 'watchlistSuccess',
+        text1: 'Watchlist Added',
+        text2: `${stock.ticker} has been added to My Watchlist.`,
+        visibilityTime: 3000,
+        autoHide: true,
+        bottomOffset: 30,
+        props: { 
+          currentColors: currentColors, 
+          onButtonPress: toggleModal 
+        },
+      });
+    }
   };
 
   return (
@@ -29,8 +57,13 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
       <Icon name="arrow-left" size={18} color={currentColors.text} />
           </TTouchable>
       <Text style={styles(currentColors).headerTitle}>{title}</Text>
-      <TTouchable onPress={toggleModal} style={styles(currentColors).bookmarkButton}>
-        <Icon name="bookmark-o" size={24} color={currentColors.text} style={styles(currentColors).bookmarkIcon} />
+      <TTouchable onPress={handleBookmarkPress} style={styles(currentColors).bookmarkButton}>
+        <Icon 
+          name={isStockInWatchlist ? "bookmark" : "bookmark-o"} 
+          size={24} 
+          color={isStockInWatchlist ? currentColors.lightGreen : currentColors.text} 
+          style={styles(currentColors).bookmarkIcon} 
+        />
       </TTouchable>
       <AddToWatchlistModal isVisible={isModalVisible} onClose={toggleModal} stock={stock} />
     </VView>
