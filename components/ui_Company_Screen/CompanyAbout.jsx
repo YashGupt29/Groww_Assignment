@@ -1,8 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import Colors from '../../constants/Colors';
+import { ThemeContext } from '../../App';
 
 const CompanyAbout = ({ companyOverview }) => {
   const { Name, Description, Industry, Sector } = companyOverview || {};
+
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
 
   const formatText = (text) => {
     if (text === null || text === undefined || (typeof text === 'string' && text.trim() === '')) {
@@ -12,15 +17,15 @@ const CompanyAbout = ({ companyOverview }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>About {formatText(Name)?.toUpperCase()}</Text>
-      <Text style={styles.description}>{formatText(Description)}</Text>
-      <View style={styles.tagsContainer}>
-        <View style={styles.tag}>
-          <Text style={styles.tagText}>Industry: {formatText(Industry)}</Text>
+    <View style={styles(currentColors).container}>
+      <Text style={styles(currentColors).header}>About {formatText(Name)?.toUpperCase()}</Text>
+      <Text style={styles(currentColors).description}>{formatText(Description)}</Text>
+      <View style={styles(currentColors).tagsContainer}>
+        <View style={styles(currentColors).tag}>
+          <Text style={styles(currentColors).tagText}>Industry: {formatText(Industry)}</Text>
         </View>
-        <View style={styles.tag}>
-          <Text style={styles.tagText}>Sector: {formatText(Sector)}</Text>
+        <View style={styles(currentColors).tag}>
+          <Text style={styles(currentColors).tagText}>Sector: {formatText(Sector)}</Text>
         </View>
       </View>
     </View>
@@ -29,7 +34,7 @@ const CompanyAbout = ({ companyOverview }) => {
 
 export default CompanyAbout
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   container: {
    
   },
@@ -37,12 +42,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
+    color: currentColors.text,
   },
   description: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#555',
+    color: currentColors.lightText,
     marginBottom: 15,
   },
   tagsContainer: {
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   tag: {
-    backgroundColor: '#f0e0d8',
+    backgroundColor: currentColors.inputBackground,
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -59,6 +64,6 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 12,
-    color: '#a0522d',
+    color: currentColors.brown,
   },
 })

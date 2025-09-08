@@ -6,6 +6,8 @@ import CompanyFooter from "../components/ui_Company_Screen/CompanyFooter"
 import { useRoute } from '@react-navigation/native';
 import { useCompanyOverview } from '../hooks/useCompanyOverview';
 import DurationSelector from '../components/DurationSelector';
+import Colors from '../constants/Colors';
+import { ThemeContext } from '../App';
 
 const CompanyScreen = () => {
   const route = useRoute();
@@ -13,29 +15,32 @@ const CompanyScreen = () => {
   const { data: companyOverview, isLoading, error } = useCompanyOverview(stock.ticker);
   const [selectedDuration, setSelectedDuration] = useState('1D');
 
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
+
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading company overview...</Text>
+      <View style={styles(currentColors).loadingContainer}>
+        <ActivityIndicator size="large" color={currentColors.primary} />
+        <Text style={{color: currentColors.text}}>Loading company overview...</Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text>Error loading company overview: {error.message}</Text>
+      <View style={styles(currentColors).errorContainer}>
+        <Text style={{color: currentColors.red}}>Error loading company overview: {error.message}</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.screen}>
+    <ScrollView style={styles(currentColors).screen}>
       <View>
           <CompanyHeader/>
       </View>
-      <View style={styles.chartWrapper}> 
+      <View style={styles(currentColors).chartWrapper}> 
           <StockChart symbol={stock.ticker} duration={selectedDuration} />
       </View>
       <DurationSelector selectedDuration={selectedDuration} onSelectDuration={setSelectedDuration} />
@@ -47,20 +52,25 @@ const CompanyScreen = () => {
 
 export default CompanyScreen;
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   screen: {
     flex: 1, 
-    backgroundColor: "#ffffff", 
+    backgroundColor: currentColors.background, 
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: currentColors.background,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: currentColors.background,
+  },
+  chartWrapper: {
+    backgroundColor: currentColors.background,
   },
 });

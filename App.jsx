@@ -25,15 +25,17 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function Tabs() {
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
   return (
     <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false,
       tabBarIcon: ({ focused, color, size }) =>
         getTabBarIcon({ route, focused, color, size }),
-      tabBarActiveTintColor: Colors.primary, 
-      tabBarInactiveTintColor: Colors.lightText, 
-      tabBarStyle: styles.tabBarStyle,
+      tabBarActiveTintColor: currentColors.primary,
+      tabBarInactiveTintColor: currentColors.lightText,
+      tabBarStyle: styles(currentColors).tabBarStyle,
     })}
   >
     <Tab.Screen name="Home" component={ExploreScreen} />
@@ -70,11 +72,24 @@ function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}> 
-        <GestureHandlerRootView style={styles.rootView}>
+        <GestureHandlerRootView style={styles(Colors[theme]).rootView}>
           <SafeAreaProvider>
             <ThemeContext.Provider value={{ theme, toggleTheme }}>
               <NavigationContainer 
-                style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}
+                theme={{
+                  dark: theme === 'dark',
+                  colors: {
+                    primary: Colors[theme].primary,
+                    background: Colors[theme].background,
+                    card: Colors[theme].cardBackground,
+                    text: Colors[theme].text,
+                    border: Colors[theme].borderColor,
+                    notification: Colors[theme].secondary,
+                  },
+                  fonts: { 
+                    regular: {}
+                  },
+                }}
               >
                 <Stack.Navigator>
                 <Stack.Screen
@@ -102,21 +117,14 @@ function App() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   rootView: {
     flex: 1,
-  },
-  lightContainer: {
-    flex: 1,
-    backgroundColor: Colors.lightBackground,
-  },
-  darkContainer: {
-    flex: 1,
-    backgroundColor: Colors.darkBackground,
+    backgroundColor: currentColors.background,
   },
   tabBarStyle: {
     position: 'absolute',
-    backgroundColor: 'transparent', 
+    backgroundColor: currentColors.cardBackground,
     elevation: 0,
   },
 });

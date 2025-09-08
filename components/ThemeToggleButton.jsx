@@ -6,20 +6,21 @@ import { ThemeContext } from '../App';
 
 const CustomThemeTabBarButton = (props) => {
   const { theme, toggleTheme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
   return (
-    <TouchableOpacity {...props} onPress={toggleTheme} style={styles.themeToggleButton}>
+    <TouchableOpacity {...props} onPress={toggleTheme} style={styles(currentColors).themeToggleButton}>
       <Ionicons 
         name={theme === 'dark' ? 'moon' : 'sunny'} 
         size={24} 
-        color={Colors.white} 
+        color={currentColors.white} 
       />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   themeToggleButton: {
-    backgroundColor: Colors.primary,
+    backgroundColor: currentColors.primary,
     borderRadius: 40,
     width: 60,
     height: 60,
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -3, 
     alignSelf: 'center',
-    shadowColor: '#000',
+    shadowColor: currentColors.black,
     shadowOffset: {
       width: 0,
       height: 2,

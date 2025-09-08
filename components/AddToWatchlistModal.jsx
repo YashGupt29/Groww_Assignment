@@ -4,6 +4,8 @@ import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-na
 import { useDispatch, useSelector } from 'react-redux';
 import { createWatchlist, addToWatchlist } from '../slices/watchlistSlice';
 import Toast from 'react-native-toast-message';
+import Colors from '../constants/Colors';
+import { ThemeContext } from '../App';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -14,6 +16,9 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
   const allWatchlists = useSelector(state => state.watchlist.watchlists);
 
   const slideAnim = useSharedValue(screenHeight);
+
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
 
   useEffect(() => {
     slideAnim.value = isVisible
@@ -83,40 +88,41 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <Pressable style={styles.modalOverlay} onPress={onClose}>
+      <Pressable style={styles(currentColors).modalOverlay} onPress={onClose}>
         <Animated.View style={[
-          styles.modalContainer,
+          styles(currentColors).modalContainer,
           animatedStyle
         ]} onStartShouldSetResponder={() => true}> 
-          <Text style={styles.modalTitle}>Add to Watchlist</Text>
+          <Text style={styles(currentColors).modalTitle}>Add to Watchlist</Text>
 
-          <View style={styles.newWatchlistContainer}>
+          <View style={styles(currentColors).newWatchlistContainer}>
             <TextInput
-              style={styles.textInput}
+              style={styles(currentColors).textInput}
               placeholder="New Watchlist Name"
+              placeholderTextColor={currentColors.lightText}
               value={newWatchlistName}
               onChangeText={setNewWatchlistName}
             />
-            <TouchableOpacity style={styles.addButton} onPress={handleCreateWatchlist}>
-              <Text style={styles.addButtonText}>Create</Text>
+            <TouchableOpacity style={styles(currentColors).addButton} onPress={handleCreateWatchlist}>
+              <Text style={styles(currentColors).addButtonText}>Create</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.watchlistOptions}>
+          <View style={styles(currentColors).watchlistOptions}>
             {Object.values(allWatchlists).map(watchlist => (
-              <TouchableOpacity key={watchlist.id} style={styles.checkboxContainer} onPress={() => handleToggleWatchlist(watchlist.id)}>
-                <View style={[styles.checkbox, selectedWatchlists[watchlist.id] && styles.checkedCheckbox]} />
-                <Text style={styles.watchlistName}>{watchlist.name}</Text>
+              <TouchableOpacity key={watchlist.id} style={styles(currentColors).checkboxContainer} onPress={() => handleToggleWatchlist(watchlist.id)}>
+                <View style={[styles(currentColors).checkbox, selectedWatchlists[watchlist.id] && styles(currentColors).checkedCheckbox]} />
+                <Text style={styles(currentColors).watchlistName}>{watchlist.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
           {hasSelectedWatchlists && ( 
             <TouchableOpacity 
-              style={styles.actionButton}
+              style={styles(currentColors).actionButton}
               onPress={handleAddToSelectedWatchlists}
             >
-              <Text style={styles.actionButtonText}>Add to Selected Watchlists</Text>
+              <Text style={styles(currentColors).actionButtonText}>Add to Selected Watchlists</Text>
             </TouchableOpacity>
           )}
         </Animated.View>
@@ -125,18 +131,18 @@ const AddToWatchlistModal = ({ isVisible, onClose, stock}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: currentColors.modalOverlayBackground,
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: currentColors.cardBackground,
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    shadowColor: '#000',
+    shadowColor: currentColors.black,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -146,6 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: currentColors.text,
   },
   newWatchlistContainer: {
     flexDirection: 'row',
@@ -154,13 +161,15 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: currentColors.borderColor,
     borderRadius: 8,
     padding: 10,
     marginRight: 10,
+    color: currentColors.text,
+    backgroundColor: currentColors.inputBackground,
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: currentColors.primary,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -168,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addButtonText: {
-    color: '#fff',
+    color: currentColors.white,
     fontWeight: 'bold',
   },
   watchlistOptions: {
@@ -183,19 +192,20 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: '#ccc',
+    borderColor: currentColors.borderColor,
     borderRadius: 4,
     marginRight: 10,
   },
   checkedCheckbox: {
-    backgroundColor: '#007bff',
-    borderColor: '#007bff',
+    backgroundColor: currentColors.primary,
+    borderColor: currentColors.primary,
   },
   watchlistName: {
     fontSize: 16,
+    color: currentColors.text,
   },
   actionButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: currentColors.green,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -204,7 +214,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   actionButtonText: {
-    color: '#fff',
+    color: currentColors.white,
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',

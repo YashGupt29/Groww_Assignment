@@ -4,6 +4,7 @@ import VView from './VView';
 import TTouchable from './TTouchable';
 import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ThemeContext } from '../App';
 
 const StockCard = ({ stockName, price, change_percentage, navigation, stockData, isSearchResult, country }) => {
   const isPositive = Number.parseFloat(change_percentage) > 0;
@@ -11,32 +12,35 @@ const StockCard = ({ stockName, price, change_percentage, navigation, stockData,
     navigation.navigate('CompanyScreen', { stock: stockData });
   };
 
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
+
   return (
-    <TTouchable onPress={onPressStockCard} style={styles.card}>
-         <VView style={styles.iconPlaceholder} />
-      <VView style={styles.textContainer}>
-        <Text style={styles.stockName}>{stockName}</Text>
+    <TTouchable onPress={onPressStockCard} style={styles(currentColors).card}>
+         <VView style={styles(currentColors).iconPlaceholder} />
+      <VView style={styles(currentColors).textContainer}>
+        <Text style={styles(currentColors).stockName}>{stockName}</Text>
         {isSearchResult ? (
           <>
-            <Text style={styles.countryName}>{country}</Text>
-            <Text style={styles.searchPrice}>Match Score: {price}</Text>
-            <Text style={styles.searchCurrency}>Currency: {change_percentage}</Text>
+            <Text style={styles(currentColors).countryName}>{country}</Text>
+            <Text style={styles(currentColors).searchPrice}>Match Score: {price}</Text>
+            <Text style={styles(currentColors).searchCurrency}>Currency: {change_percentage}</Text>
           </>
         ) : (
           <>
-            <Text style={[styles.price, { color: isPositive ? Colors.green : Colors.red }]}>
+            <Text style={[styles(currentColors).price, { color: currentColors.text}]}>
             ₹ {price}
             </Text>
-            <VView style={styles.changeContainer}>
+            <VView style={styles(currentColors).changeContainer}>
               
-              <Text style={[styles.changePercentage, { color: isPositive ? Colors.green : Colors.red }]}>
+              <Text style={[styles(currentColors).changePercentage, { color: isPositive ? currentColors.green : currentColors.red }]}>
                 ({change_percentage})
               </Text>
-              <VView style={[styles.changeIconBackground, { backgroundColor: isPositive ? Colors.lightGreen : Colors.lightRed }]}>
+              <VView style={[styles(currentColors).changeIconBackground, { backgroundColor: isPositive ? currentColors.lightGreen : currentColors.lightRed }]}>
                 <Icon
                   name={isPositive ? 'arrow-up' : 'arrow-down'}
                   size={9}
-                  color={isPositive ? Colors.green : Colors.red}
+                  color={isPositive ? currentColors.green : currentColors.red}
                 />
               </VView>
             </VView>
@@ -47,16 +51,16 @@ const StockCard = ({ stockName, price, change_percentage, navigation, stockData,
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   card: {
     width: 170,
     height: 'auto',
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: currentColors.cardBackground,
     borderRadius: 8,
     padding: 10,
     margin: 5,
     alignItems: 'flex-start', 
-    shadowColor: Colors.black,
+    shadowColor: currentColors.black,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -69,28 +73,28 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.inputBackground,
+    backgroundColor: currentColors.inputBackground,
     marginBottom: 5,
   },
   stockName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: currentColors.text,
   },
   countryName: {
     fontSize: 14,
-    color: Colors.text,
+    color: currentColors.text,
     marginBottom: 5,
   },
   searchPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: currentColors.text,
     marginTop: 5,
   },
   searchCurrency: {
     fontSize: 12,
-    color: Colors.text,
+    color: currentColors.text,
   },
   price: {
     fontSize: 14,

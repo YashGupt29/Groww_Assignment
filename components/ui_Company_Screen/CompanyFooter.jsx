@@ -2,9 +2,14 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { formatMarketCap, formatDividendYield, formatProfitMargin, formatPrice } from '../../utils/formatters';
 import CompanyAbout from "./CompanyAbout"
+import Colors from '../../constants/Colors';
+import { ThemeContext } from '../../App';
 
 const CompanyFooter = ({ companyOverview }) => {
   const { MarketCapitalization, PERatio, Beta, DividendYield, ProfitMargin, '52WeekLow': weekLow, '52WeekHigh': weekHigh, AnalystTargetPrice: currentPrice } = companyOverview || {};
+
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
 
   const formatValue = (value, formatter = (v) => v) => {
     if (value === null || value === undefined || value === "None" || (typeof value === 'string' && value.trim() === '') || (typeof value === 'number' && isNaN(value))) {
@@ -14,44 +19,44 @@ const CompanyFooter = ({ companyOverview }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles(currentColors).container}>
         <CompanyAbout companyOverview={companyOverview} />
-      <View style={styles.weekRangeContainer}>
+      <View style={styles(currentColors).weekRangeContainer}>
         <View>
-          <Text style={styles.label}>52-Week Low</Text>
-          <Text style={styles.value}>{formatValue(weekLow, formatPrice)}</Text>
+          <Text style={styles(currentColors).label}>52-Week Low</Text>
+          <Text style={styles(currentColors).value}>{formatValue(weekLow, formatPrice)}</Text>
         </View>
-        <View style={styles.priceIndicator}>
-          <Text style={styles.currentPrice}>Current price: {formatValue(currentPrice, formatPrice)}</Text>
-          <Text style={styles.arrowIcon}>▼</Text>
-          <View style={styles.horizontalLine} />
+        <View style={styles(currentColors).priceIndicator}>
+          <Text style={styles(currentColors).currentPrice}>Current price: {formatValue(currentPrice, formatPrice)}</Text>
+          <Text style={styles(currentColors).arrowIcon}>▼</Text>
+          <View style={styles(currentColors).horizontalLine} />
         </View>
         <View>
-          <Text style={styles.label}>52-Week High</Text>
-          <Text style={styles.value}>{formatValue(weekHigh, formatPrice)}</Text>
+          <Text style={styles(currentColors).label}>52-Week High</Text>
+          <Text style={styles(currentColors).value}>{formatValue(weekHigh, formatPrice)}</Text>
         </View>
       </View>
 
-      <View style={styles.metricsContainer}>
-        <View style={styles.metricItem}>
-          <Text style={styles.label}>Market Cap</Text>
-          <Text style={styles.value}>{formatValue(MarketCapitalization, (val) => formatMarketCap(parseFloat(val)))}</Text>
+      <View style={styles(currentColors).metricsContainer}>
+        <View style={styles(currentColors).metricItem}>
+          <Text style={styles(currentColors).label}>Market Cap</Text>
+          <Text style={styles(currentColors).value}>{formatValue(MarketCapitalization, (val) => formatMarketCap(parseFloat(val)))}</Text>
         </View>
-        <View style={styles.metricItem}>
-          <Text style={styles.label}>P/E Ratio</Text>
-          <Text style={styles.value}>{formatValue(PERatio, (val) => parseFloat(val).toFixed(2))}</Text>
+        <View style={styles(currentColors).metricItem}>
+          <Text style={styles(currentColors).label}>P/E Ratio</Text>
+          <Text style={styles(currentColors).value}>{formatValue(PERatio, (val) => parseFloat(val).toFixed(2))}</Text>
         </View>
-        <View style={styles.metricItem}>
-          <Text style={styles.label}>Beta</Text>
-          <Text style={styles.value}>{formatValue(Beta, (val) => parseFloat(val).toFixed(3))}</Text>
+        <View style={styles(currentColors).metricItem}>
+          <Text style={styles(currentColors).label}>Beta</Text>
+          <Text style={styles(currentColors).value}>{formatValue(Beta, (val) => parseFloat(val).toFixed(3))}</Text>
         </View>
-        <View style={styles.metricItem}>
-          <Text style={styles.label}>Dividend Yield</Text>
-          <Text style={styles.value}>{formatValue(DividendYield, formatDividendYield)}</Text>
+        <View style={styles(currentColors).metricItem}>
+          <Text style={styles(currentColors).label}>Dividend Yield</Text>
+          <Text style={styles(currentColors).value}>{formatValue(DividendYield, formatDividendYield)}</Text>
         </View>
-        <View style={styles.metricItem}>
-          <Text style={styles.label}>Profit Margin</Text>
-          <Text style={styles.value}>{formatValue(ProfitMargin, formatProfitMargin)}</Text>
+        <View style={styles(currentColors).metricItem}>
+          <Text style={styles(currentColors).label}>Profit Margin</Text>
+          <Text style={styles(currentColors).value}>{formatValue(ProfitMargin, formatProfitMargin)}</Text>
         </View>
       </View>
     </View>
@@ -60,15 +65,15 @@ const CompanyFooter = ({ companyOverview }) => {
 
 export default CompanyFooter
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: '#fff',
+    backgroundColor: currentColors.cardBackground,
     borderRadius: 10,
     marginHorizontal: 10,
     marginTop: 10,
-    shadowColor: '#000',
+    shadowColor: currentColors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
@@ -82,13 +87,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: '#666',
+    color: currentColors.lightText,
     marginBottom: 5,
   },
   value: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
+    color: currentColors.text,
   },
   priceIndicator: {
     flex: 1,
@@ -98,16 +103,16 @@ const styles = StyleSheet.create({
   },
   currentPrice: {
     fontSize: 14,
-    color: '#333',
+    color: currentColors.text,
   },
   arrowIcon: {
     fontSize: 12,
-    color: '#333',
+    color: currentColors.text,
   },
   horizontalLine: {
     width: '100%',
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: currentColors.borderColor,
     marginRight:14
   },
   metricsContainer: {
@@ -115,7 +120,7 @@ const styles = StyleSheet.create({
     gap: 6,
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },  
+  },
   metricItem: {
     width: '25%', 
     marginBottom: 5,

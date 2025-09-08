@@ -1,16 +1,17 @@
 import { StyleSheet } from 'react-native';
 import Colors from './Colors';
+import { ThemeContext } from '../App';
 
-const AppStyles = StyleSheet.create({
+const AppStyles = (currentColors) => StyleSheet.create({
   screenContainer: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: currentColors.background,
   },
   headerContainer: {
     padding: 15,
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: currentColors.cardBackground,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderColor,
+    borderBottomColor: currentColors.borderColor,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -18,16 +19,16 @@ const AppStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: currentColors.text,
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
   cardContainer: {
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: currentColors.cardBackground,
     borderRadius: 8,
     padding: 10,
     margin: 8,
-    shadowColor: Colors.black,
+    shadowColor: currentColors.black,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -39,7 +40,7 @@ const AppStyles = StyleSheet.create({
   textInput: {
     flex: 1,
     height: 40,
-    backgroundColor: Colors.inputBackground,
+    backgroundColor: currentColors.inputBackground,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginHorizontal: 15,
@@ -48,16 +49,16 @@ const AppStyles = StyleSheet.create({
   h1: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: currentColors.text,
   },
   h2: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: currentColors.text,
   },
   bodyText: {
     fontSize: 14,
-    color: Colors.lightText,
+    color: currentColors.lightText,
   },
   // Flexbox helpers
   row: {

@@ -5,6 +5,8 @@ import VView from '../components/VView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
+import Colors from '../constants/Colors';
+import { ThemeContext } from '../App';
 
 const ITEMS_PER_PAGE = 10; 
 const CARD_HEIGHT = 125; 
@@ -26,6 +28,9 @@ const StockListScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const insets = useSafeAreaInsets();
   const headerPaddingTop = Platform.OS === 'android' ? insets.top : 0;
+
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
 
   useEffect(() => {
     setCurrentPage(1);
@@ -55,8 +60,8 @@ const StockListScreen = ({ navigation, route }) => {
   const renderFooter = () => {
     if (!isLoading) return null;
     return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={styles(currentColors).loader}>
+        <ActivityIndicator size="large" color={currentColors.primary} />
       </View>
     );
   };
@@ -74,13 +79,13 @@ const StockListScreen = ({ navigation, route }) => {
   ), [navigation]);
 
   return (
-    <VView style={styles.container}>
-      <VView style={[styles.header, { paddingTop: headerPaddingTop }]}>
-        <Text style={styles.headerTitle}>{title}</Text>
+    <VView style={styles(currentColors).container}>
+      <VView style={[styles(currentColors).header, { paddingTop: headerPaddingTop }]}>
+        <Text style={styles(currentColors).headerTitle}>{title}</Text>
       </VView>
       {initialData.length === 0 ? (
-        <View style={styles.emptyWatchlistContainer}>
-          <Text style={styles.emptyWatchlistText}>
+        <View style={styles(currentColors).emptyWatchlistContainer}>
+          <Text style={styles(currentColors).emptyWatchlistText}>
             {watchlistId ? "Add Stocks To your watchlist" : "Error fetching data. Please try again later."}
           </Text>
         </View>
@@ -90,7 +95,7 @@ const StockListScreen = ({ navigation, route }) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.symbol || item.ticker}
           numColumns={2}
-          columnWrapperStyle={styles.row}
+          columnWrapperStyle={styles(currentColors).row}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={renderFooter}
@@ -109,21 +114,22 @@ const StockListScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: currentColors.background,
   },
   header: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: currentColors.borderColor,
+    backgroundColor: currentColors.cardBackground,
     alignItems: 'center',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: currentColors.text,
   },
   row: {
     flex: 1,
@@ -134,17 +140,18 @@ const styles = StyleSheet.create({
   loader: {
     paddingVertical: 20,
     borderTopWidth: 1,
-    borderColor: '#CED0CE',
+    borderColor: currentColors.borderColor,
   },
   emptyWatchlistContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: currentColors.background,
   },
   emptyWatchlistText: {
     fontSize: 16,
-    color: '#888',
+    color: currentColors.lightText,
     textAlign: 'center',
   },
 });

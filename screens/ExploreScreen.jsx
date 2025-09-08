@@ -6,6 +6,8 @@ import TTouchable from '../components/TTouchable';
 import StockCard from '../components/StockCard';
 import { useTopGainersLosers } from '../hooks/useTopGainersLosers';
 import { fetchSymbolSearch } from '../services/fetchSymbolSearch';
+import Colors from '../constants/Colors';
+import { ThemeContext } from '../App';
 
 const ExploreScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -14,6 +16,10 @@ const ExploreScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
+
   useEffect(() => {
     const handler = setTimeout(async () => {
       if (searchQuery.length > 0) {
@@ -37,17 +43,17 @@ const ExploreScreen = ({ navigation }) => {
 
   if (isLoading || isRefetching) { 
     return (
-      <VView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.loadingText}>Loading stocks...</Text>
+      <VView style={styles(currentColors).loadingContainer}>
+        <ActivityIndicator size="large" color={currentColors.primary} />
+        <Text style={styles(currentColors).loadingText}>Loading stocks...</Text>
       </VView>
     );
   }
 
   if (error) {
     return (
-      <VView style={styles.errorContainer}>
-        <Text style={styles.errorText}>Error: {error.message}</Text>
+      <VView style={styles(currentColors).errorContainer}>
+        <Text style={styles(currentColors).errorText}>Error: {error.message}</Text>
       </VView>
     );
   }
@@ -58,30 +64,30 @@ const ExploreScreen = ({ navigation }) => {
   const fullTopLosers = data?.top_losers  || [];
 
   return (
-    <VView style={styles.container}>
-      <VView style={[styles.header, { paddingTop: headerPaddingTop }]}>
-        <Text style={styles.headerTitle}>Stocks App</Text>
+    <VView style={styles(currentColors).container}>
+      <VView style={[styles(currentColors).header, { paddingTop: headerPaddingTop }]}>
+        <Text style={styles(currentColors).headerTitle}>Stocks App</Text>
         <TextInput
-          style={styles.searchBar}
+          style={styles(currentColors).searchBar}
           placeholder="Search here..."
-          placeholderTextColor="#424242"
+          placeholderTextColor={currentColors.lightText}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
       </VView>
       <ScrollView 
-        style={styles.scrollViewContent}
+        style={styles(currentColors).scrollViewContent}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={currentColors.text} />
         }
       >
         {searchLoading ? (
-          <VView style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={styles.loadingText}>Searching stocks...</Text>
+          <VView style={styles(currentColors).loadingContainer}>
+            <ActivityIndicator size="large" color={currentColors.primary} />
+            <Text style={styles(currentColors).loadingText}>Searching stocks...</Text>
           </VView>
         ) : searchResults.length > 0 ? (
-          <VView style={styles.cardsContainer}>
+          <VView style={styles(currentColors).cardsContainer}>
             {searchResults.map((stock) => (
               <StockCard
                 key={stock["1. symbol"]}
@@ -96,18 +102,18 @@ const ExploreScreen = ({ navigation }) => {
             ))}
           </VView>
         ) : searchQuery.length > 0 ? (
-          <VView style={styles.errorContainer}>
-            <Text style={styles.errorText}>No results found for "{searchQuery}".</Text>
+          <VView style={styles(currentColors).errorContainer}>
+            <Text style={styles(currentColors).errorText}>No results found for "{searchQuery}".</Text>
           </VView>
         ) : (
           <>
-            <VView style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Top Gainers</Text>
+            <VView style={styles(currentColors).sectionHeader}>
+              <Text style={styles(currentColors).sectionTitle}>Top Gainers</Text>
               <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Gainers', data: fullTopGainers })}>
-                <Text style={styles.viewAllText}>View All</Text>
+                <Text style={styles(currentColors).viewAllText}>View All</Text>
               </TTouchable>
             </VView>
-            <VView style={styles.cardsContainer}>
+            <VView style={styles(currentColors).cardsContainer}>
               {topGainers.map(stock => (
                 <StockCard
                   key={stock.ticker}
@@ -120,13 +126,13 @@ const ExploreScreen = ({ navigation }) => {
               ))}
             </VView>
 
-            <VView style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Top Losers</Text>
+            <VView style={styles(currentColors).sectionHeader}>
+              <Text style={styles(currentColors).sectionTitle}>Top Losers</Text>
               <TTouchable onPress={() => navigation.navigate('StockList', { title: 'Top Losers', data: fullTopLosers })}>
-                <Text style={styles.viewAllText}>View All</Text>
+                <Text style={styles(currentColors).viewAllText}>View All</Text>
               </TTouchable>
             </VView>
-            <VView style={styles.cardsContainer}>
+            <VView style={styles(currentColors).cardsContainer}>
               {topLosers.map(stock => (
                 <StockCard
                   key={stock.ticker}
@@ -145,10 +151,10 @@ const ExploreScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: currentColors.background,
   },
   header: {
     flexDirection: 'row',
@@ -156,22 +162,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: currentColors.borderColor,
+    backgroundColor: currentColors.cardBackground,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: currentColors.text,
   },
   searchBar: {
     flex: 1,
     marginLeft: 20,
     padding: 8,
     borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-    color:"black"
+    backgroundColor: currentColors.inputBackground,
+    color: currentColors.text,
   },
   scrollViewContent: {
     padding: 10,
+    backgroundColor: currentColors.background,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -183,9 +192,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: currentColors.text,
   },
   viewAllText: {
-    color: 'blue',
+    color: currentColors.primary,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -197,21 +207,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: currentColors.background,
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#555',
+    color: currentColors.lightText,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: currentColors.background,
   },
   errorText: {
     fontSize: 16,
-    color: 'red',
+    color: currentColors.red,
     textAlign: 'center',
   },
 });

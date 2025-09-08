@@ -3,9 +3,13 @@ import { View, Text, StyleSheet } from 'react-native';
 import { company } from '../constants/dummyData';
 import Colors from '../constants/Colors';
 import VView from './VView';
+import { ThemeContext } from '../App';
 
 const CompanyHeader = () => {
   const { Name, Symbol, AssetType, Exchange, MarketCapitalization, PERatio } = company;
+
+  const { theme } = React.useContext(ThemeContext);
+  const currentColors = Colors[theme];
 
   const formatMarketCap = (cap) => {
     if (!cap) return 'N/A';
@@ -22,16 +26,16 @@ const CompanyHeader = () => {
   const formattedMarketCap = formatMarketCap(MarketCapitalization);
 
   return (
-    <VView style={styles.container}>
-      <View style={styles.logoPlaceholder} />
-      <View style={styles.companyInfo}>
-        <Text style={styles.companyName}>{Name.toUpperCase()}</Text>
-        <Text style={styles.companyDetails}>{Symbol}, {AssetType}</Text>
-        <Text style={styles.companyDetails}>{Exchange}</Text>
+    <VView style={styles(currentColors).container}>
+      <View style={styles(currentColors).logoPlaceholder} />
+      <View style={styles(currentColors).companyInfo}>
+        <Text style={styles(currentColors).companyName}>{Name.toUpperCase()}</Text>
+        <Text style={styles(currentColors).companyDetails}>{Symbol}, {AssetType}</Text>
+        <Text style={styles(currentColors).companyDetails}>{Exchange}</Text>
       </View>
-      <View style={styles.priceInfo}>
-        <Text style={styles.price}>${(Math.random() * 200 + 100).toFixed(2)}</Text>
-        <Text style={[styles.change, { color: Math.random() > 0.5 ? Colors.green : Colors.red }]}>
+      <View style={styles(currentColors).priceInfo}>
+        <Text style={styles(currentColors).price}>${(Math.random() * 200 + 100).toFixed(2)}</Text>
+        <Text style={[styles(currentColors).change, { color: Math.random() > 0.5 ? currentColors.green : currentColors.red }]}>
           {(Math.random() * 0.5 * (Math.random() > 0.5 ? 1 : -1)).toFixed(2)}%
           {Math.random() > 0.5 ? ' ▲' : ' ▼'}
         </Text>
@@ -40,19 +44,19 @@ const CompanyHeader = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (currentColors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: Colors.white,
+    backgroundColor: currentColors.background,
 
   },
   logoPlaceholder: {
     width: 70,
     height: 70,
     borderRadius: 100,
-    backgroundColor: Colors.inputBackground,
+    backgroundColor: currentColors.inputBackground,
     marginRight: 16,
   },
   companyInfo: {
@@ -61,11 +65,11 @@ const styles = StyleSheet.create({
   companyName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: currentColors.text,
   },
   companyDetails: {
     fontSize: 10,
-    color: Colors.darkGray,
+    color: currentColors.lightText,
   },
   priceInfo: {
     alignItems: 'flex-end',
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.black,
+    color: currentColors.text,
   },
   change: {
     fontSize: 14,
