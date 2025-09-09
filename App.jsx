@@ -20,6 +20,7 @@ import { store } from './utils/store';
 import Toast from 'react-native-toast-message';
 import { ToastConfig } from './components/ToastConfig';
 import SplashScreen from './screens/SplashScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export const ThemeContext = React.createContext();
 
@@ -81,11 +82,12 @@ function App() {
 
   return (
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}> 
-        <GestureHandlerRootView style={styles(Colors[theme]).rootView}>
-          <SafeAreaProvider>
-            <ThemeContext.Provider value={{ theme, toggleTheme }}>
-              <NavigationContainer 
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}> 
+          <GestureHandlerRootView style={styles(Colors[theme]).rootView}>
+            <SafeAreaProvider>
+              <ThemeContext.Provider value={{ theme, toggleTheme }}>
+                <NavigationContainer 
                 theme={{
                   dark: theme === 'dark',
                   colors: {
@@ -122,6 +124,7 @@ function App() {
         </SafeAreaProvider>
         </GestureHandlerRootView>
       </QueryClientProvider>
+      </ErrorBoundary>
       <Toast config={ToastConfig} position='bottom' bottomOffset={0} />
     </Provider>
   );
