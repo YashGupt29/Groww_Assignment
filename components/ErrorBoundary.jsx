@@ -24,7 +24,7 @@ class ErrorBoundary extends Component {
         <View style={styles.container}>
           <Text style={styles.title}>Something went wrong.</Text>
           <Text style={styles.errorText}>{this.state.error && this.state.error.toString()}</Text>
-          <Text style={styles.errorInfo}>{this.state.errorInfo && this.state.errorInfo.componentStack}</Text>
+          <Text style={styles.errorInfo}>(Maybe Because Of the Api Failure Limit upto 25 day)</Text>
         </View>
       );
     }

@@ -1,14 +1,13 @@
 import { StyleSheet, ScrollView, View, Text, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import StockChart from '../components/graph/StockChart'
+import StockChart from '../components/StockChart'
 import CompanyHeader from  '../components/CompanyHeader'
-import CompanyFooter from "../components/ui_Company_Screen/CompanyFooter"
+import CompanyFooter from "../components/CompanyFooter"
 import { useRoute } from '@react-navigation/native';
 import { useCompanyOverview } from '../hooks/useCompanyOverview';
 import DurationSelector from '../components/DurationSelector';
 import Colors from '../constants/Colors';
 import { ThemeContext } from '../App';
-
 const CompanyScreen = () => {
   const route = useRoute();
   const { stock, companyLogoUrl } = route.params;

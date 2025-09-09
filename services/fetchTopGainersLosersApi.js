@@ -6,7 +6,6 @@ const API_BASE_URL = 'https://www.alphavantage.co/query';
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
-
 export const fetchTopGainersLosers = async () => {
   try {
     const response = await api.get('', {

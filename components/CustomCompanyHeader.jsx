@@ -61,7 +61,7 @@ const CustomCompanyHeader = ({ navigation, route, options }) => {
         <Icon 
           name={isStockInWatchlist ? "bookmark" : "bookmark-o"} 
           size={24} 
-          color={isStockInWatchlist ? currentColors.lightGreen : currentColors.text} 
+          color={isStockInWatchlist ? currentColors.primary : currentColors.text} 
           style={styles(currentColors).bookmarkIcon} 
         />
       </TTouchable>

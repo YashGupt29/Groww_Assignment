@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { formatMarketCap, formatDividendYield, formatProfitMargin, formatPrice } from '../../utils/formatters';
+import { formatMarketCap, formatDividendYield, formatProfitMargin, formatPrice } from '../utils/formatters';
 import CompanyAbout from "./CompanyAbout"
-import Colors from '../../constants/Colors';
-import { ThemeContext } from '../../App';
+import Colors from '../constants/Colors';
+import { ThemeContext } from '../App';
 
 const CompanyFooter = ({ companyOverview }) => {
   const { MarketCapitalization, PERatio, Beta, DividendYield, ProfitMargin, '52WeekLow': weekLow, '52WeekHigh': weekHigh, AnalystTargetPrice: currentPrice } = companyOverview || {};

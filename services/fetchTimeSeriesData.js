@@ -56,9 +56,7 @@ export const fetchTimeSeriesData = async (symbol, duration) => {
           apikey: ALPHAVANTAGE_API_KEY,   
         },
       });
-      console.log(dataKey)
     const timeSeries = response.data[dataKey];
-    console.log("timeser",timeSeries);
 
 
     if (!timeSeries) {
@@ -95,7 +93,6 @@ export const fetchTimeSeriesData = async (symbol, duration) => {
       default:
         break;
     }
-    console.log("hello",formattedData);
     return formattedData;
   } catch (error) {
     console.error(`Error fetching time series data for ${symbol} (${duration}):`, error);

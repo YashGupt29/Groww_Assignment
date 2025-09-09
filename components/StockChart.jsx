@@ -6,11 +6,11 @@ import {
   Path,
   Skia,
 } from "@shopify/react-native-skia";
-import { Tooltip } from "../ToolTip";
-import { useTimeSeriesData } from '../../hooks/useTimeSeriesData';
+import { Tooltip } from "./ToolTip";
+import { useTimeSeriesData } from '../hooks/useTimeSeriesData';
 import { ActivityIndicator, Text } from 'react-native';
-import Colors from '../../constants/Colors';
-import { ThemeContext } from '../../App';
+import Colors from '../constants/Colors';
+import { ThemeContext } from '../App';
 
 
 const StockChart = ({ symbol, duration }) => {

@@ -33,7 +33,18 @@ export const ToastConfig = {
   success: ({ text1, text2, props, ...rest }) => (
     <BaseToast
       {...rest}
-      style={{ borderLeftColor: props?.currentColors?.green || Colors.light.green, backgroundColor: props?.currentColors?.cardBackground || Colors.light.cardBackground }}
+      style={{ width:"100%" ,borderLeftColor: props?.currentColors?.green || Colors.light.green, backgroundColor: props?.currentColors?.cardBackground || Colors.light.cardBackground }}
+      contentContainerStyle={{ paddingHorizontal: 15 }}
+      text1Style={{ color: props?.currentColors?.text || Colors.light.text, fontSize: 15, fontWeight: '400' }}
+      text2Style={{ color: props?.currentColors?.lightText || Colors.light.lightText, fontSize: 13 }}
+      text1={text1}
+      text2={text2}
+    />
+  ),
+  error: ({ text1, text2, props, ...rest }) => (
+    <BaseToast
+      {...rest}
+      style={{ width:"100%",borderLeftColor: props?.currentColors?.red || Colors.light.red, backgroundColor: props?.currentColors?.cardBackground || Colors.light.cardBackground }}
       contentContainerStyle={{ paddingHorizontal: 15 }}
       text1Style={{ color: props?.currentColors?.text || Colors.light.text, fontSize: 15, fontWeight: '400' }}
       text2Style={{ color: props?.currentColors?.lightText || Colors.light.lightText, fontSize: 13 }}

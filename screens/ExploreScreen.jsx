@@ -8,6 +8,7 @@ import { useTopGainersLosers } from '../hooks/useTopGainersLosers';
 import { fetchSymbolSearch } from '../services/fetchSymbolSearch';
 import Colors from '../constants/Colors';
 import { ThemeContext } from '../App';
+import Toast from 'react-native-toast-message';
 
 const ExploreScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -57,11 +58,25 @@ const ExploreScreen = ({ navigation }) => {
       </VView>
     );
   }
-
-  const topGainers = data?.top_gainers.slice(0, 4) || [];
-  const topLosers = data?.top_losers.slice(0, 4) || [];
-  const fullTopGainers = data?.top_gainers  || [];
-  const fullTopLosers = data?.top_losers  || [];
+  if (data && typeof data === 'object' && data.Information) {
+    Toast.show({
+      type: 'error',
+      text1: 'API Limit Reached For Today',
+      text2: data?.Information,
+      props: { currentColors: currentColors },
+    });
+    return (
+      <VView style={styles(currentColors).noDataContainer}>
+        <Text style={styles(currentColors).noDataText}>No stock data fetched.
+          Try Again Tomorrow
+        </Text>
+      </VView>
+    );
+  }
+  const topGainers = Array.isArray(data?.top_gainers) ? data.top_gainers.slice(0, 4) : [];
+  const topLosers = Array.isArray(data?.top_losers) ? data.top_losers.slice(0, 4) : [];
+  const fullTopGainers = Array.isArray(data?.top_gainers) ? data.top_gainers : [];
+  const fullTopLosers = Array.isArray(data?.top_losers) ? data.top_losers : [];
 
   return (
     <VView style={styles(currentColors).container}>
@@ -236,6 +251,18 @@ const styles = (currentColors) => StyleSheet.create({
     color: currentColors.white,
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: currentColors.background,
+    padding: 20,
+  },
+  noDataText: {
+    fontSize: 18,
+    color: currentColors.text,
+    textAlign: 'center',
   },
 });
 
