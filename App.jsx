@@ -1,75 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {  NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ExploreScreen from './screens/ExploreScreen';
-import WatchlistScreen from './screens/WatchlistScreen'; 
-import { StyleSheet, useColorScheme, Appearance } from 'react-native';
-import Colors from './constants/Colors'; 
-import { getTabBarIcon } from './utils/getTabBarIcon';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CompanyScreen from './screens/CompanyScreen';
 import StockListScreen from './screens/StockListScreen';
-import CustomCompanyHeader from './components/CustomCompanyHeader'; 
+import CustomCompanyHeader from './components/CustomCompanyHeader';
+import Tabs from './components/Tabs';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './utils/queryClient'; 
-import CustomThemeTabBarButton from './components/ThemeToggleButton';
+import { queryClient } from './utils/queryClient';
 import { Provider } from 'react-redux';
 import { store } from './utils/store';
 import Toast from 'react-native-toast-message';
 import { ToastConfig } from './components/ToastConfig';
 import SplashScreen from './screens/SplashScreen';
 import ErrorBoundary from './components/ErrorBoundary';
+import { getNavigationTheme } from './utils/navigation';
+import { StyleSheet, useColorScheme, Appearance } from 'react-native';
+import Colors from './constants/Colors';
 
 export const ThemeContext = React.createContext();
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
-
-function Tabs() {
-  const { theme } = React.useContext(ThemeContext);
-  const currentColors = Colors[theme];
-  return (
-    <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarIcon: ({ focused, color, size }) =>
-        getTabBarIcon({ route, focused, color, size }),
-      tabBarActiveTintColor: currentColors.primary,
-      tabBarInactiveTintColor: currentColors.lightText,
-      tabBarStyle: styles(currentColors).tabBarStyle,
-    })}
-  >
-    <Tab.Screen name="Home" component={ExploreScreen} />
-    <Tab.Screen 
-      name="ThemeToggle" 
-      component={ExploreScreen} 
-      options={{
-        tabBarLabel: () => null,
-        tabBarButton: CustomThemeTabBarButton,
-      }}
-    />
-    <Tab.Screen name="Watchlist" component={WatchlistScreen} />
-  </Tab.Navigator>
-  );
-}
-
-const renderCompanyHeader = (props) => <CustomCompanyHeader {...props} />;
 
 function App() {
   const colorScheme = useColorScheme();
   const [theme, setTheme] = useState(colorScheme);
   const [isLoading, setIsLoading] = useState(true);
+  const Stack = createNativeStackNavigator();
+
 
   useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme: newColorScheme }) => {
+    const handleColorSchemeChange = ({ colorScheme: newColorScheme }) => {
       setTheme(newColorScheme);
-    });
-    setTimeout(() => {
+    };
+
+    const subscription = Appearance.addChangeListener(handleColorSchemeChange);
+
+    const timer = setTimeout(() => {
       setIsLoading(false);
     }, 800);
-    return () => subscription.remove();
+
+    return () => {
+      subscription.remove();
+      clearTimeout(timer);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -83,25 +57,12 @@ function App() {
   return (
     <Provider store={store}>
       <ErrorBoundary>
-        <QueryClientProvider client={queryClient}> 
+        <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView style={styles(Colors[theme]).rootView}>
             <SafeAreaProvider>
               <ThemeContext.Provider value={{ theme, toggleTheme }}>
-                <NavigationContainer 
-                theme={{
-                  dark: theme === 'dark',
-                  colors: {
-                    primary: Colors[theme].primary,
-                    background: Colors[theme].background,
-                    card: Colors[theme].cardBackground,
-                    text: Colors[theme].text,
-                    border: Colors[theme].borderColor,
-                    notification: Colors[theme].secondary,
-                  },
-                  fonts: { 
-                    regular: {}
-                  },
-                }}
+                <NavigationContainer
+                theme={getNavigationTheme(theme)}
               >
                 <Stack.Navigator>
                 <Stack.Screen
@@ -113,7 +74,7 @@ function App() {
                   name="CompanyScreen"
                   component={CompanyScreen}
                   options={{
-                    header: renderCompanyHeader,
+                    header: CustomCompanyHeader,
                     title: 'Detail Overview',
                   }}
                 />

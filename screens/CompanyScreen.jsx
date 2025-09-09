@@ -13,7 +13,6 @@ const CompanyScreen = () => {
   const { stock, companyLogoUrl } = route.params;
   const { data: companyOverview, isLoading, error } = useCompanyOverview(stock.ticker);
   const [selectedDuration, setSelectedDuration] = useState('1D');
-
   const { theme } = React.useContext(ThemeContext);
   const currentColors = Colors[theme];
 
